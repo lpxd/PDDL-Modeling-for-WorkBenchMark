@@ -53,8 +53,8 @@ What we must deliver, what we aim for if time allows, and what we explicitly lea
 | Phase                  | Goal                                                                        | Status         |
 | ---------------------- | --------------------------------------------------------------------------- | -------------- |
 | **1 — Setup**          | Repo, `pyproject.toml`, package skeleton, env smoke tests                   | ✅ done         |
-| **2 — Symbolic layer** | `lego_domain.pddl`, YAML parser, problem generator                          | 🚧 in progress |
-| **3 — Execution**      | `DomainBridge` wiring, predicate grounding, motion executors                | ⏳ pending      |
+| **2 — Symbolic layer** | `lego_domain.pddl`, YAML parser, problem generator, planner                 | ✅ done         |
+| **3 — Execution**      | `DomainBridge` wiring, predicate grounding, motion executors                | 🚧 in progress |
 | **4 — Evaluation**     | Batch runner, metrics vs. ABD, failure analysis (Tier 1–2; Tier 3 optional) | ⏳ pending      |
 
 
@@ -62,7 +62,8 @@ What we must deliver, what we aim for if time allows, and what we explicitly lea
 
 - stud-grid PDDL domain with `pick` / `place` / `stack`
 - Tier‑3-ready predicates YAML parser for WorkBenchMark `blocks[]` specs
-- problem generator from initial + goal YAML.
+- problem generator from initial + goal YAML
+- classical planner (UPF) producing assembly plans
 
 **Phase 3 deliverables:** 
 
