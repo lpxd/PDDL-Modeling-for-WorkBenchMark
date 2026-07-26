@@ -68,7 +68,13 @@ What we must deliver, what we aim for if time allows, and what we explicitly lea
 **Phase 3 deliverables:** 
 
 - map PDDL actions to `PickPlaceExecutor` calls in TAMPanda
-- ground symbolic stud/layer/rot poses to continuous YAML poses
+- resolve each action’s brick to a continuous pose via YAML lookup
+
+> **Note:** `stud` / `layer` / `rot` are for planning only.
+> Execution does not invert the grid, because reverting is lossy.
+> Instead they use the ground-truth YAML poses provided by WorkBenchMark.
+> `pick` uses `initial_blocks` as the pose source,
+> `place`/`stack` use goal `blocks` as the pose source.
 
 **Phase 4 deliverables:** 
 
