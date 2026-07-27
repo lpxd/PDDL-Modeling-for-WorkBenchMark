@@ -1,5 +1,6 @@
 """PDDL domain modeling for WorkBenchMark LEGO Duplo assembly (AIfR Project P1)."""
 
+from workbenchmark_pddl.execution import GroundedAction, ground_plan, ground_plan_action
 from workbenchmark_pddl.grid import DiscretePose, quantize_brick, quantize_pose
 from workbenchmark_pddl.planner import PlanAction, PlanResult, plan_task
 from workbenchmark_pddl.problem import render_problem, write_problem
@@ -22,6 +23,9 @@ __all__ = [
     "PlanAction",
     "PlanResult",
     "plan_task",
+    "GroundedAction",
+    "ground_plan",
+    "ground_plan_action",
     "__version__",
 ]
 
