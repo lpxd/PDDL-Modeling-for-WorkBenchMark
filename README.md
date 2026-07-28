@@ -109,7 +109,7 @@ Python 3.10+, TAMPanda at `../tampanda`, dataset at `../dataset`.
 ```bash
 cd /work/rleap1/aifr/prak4/Project
 source /work/rleap1/aifr/prak4/venv/bin/activate
-pip install -e ../tampanda
+pip install -e ../tampanda --config-settings editable_mode=compat
 pip install -e .[dev]
 python scripts/check_env.py
 pytest

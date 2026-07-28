@@ -35,3 +35,10 @@ workbenchmark_pddl = ["pddl/*.pddl"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+# Point the type checker at the shared prak4 venv and the local TAMPanda tree
+[tool.pyright]
+venvPath = ".."
+venv = "venv"
+extraPaths = ["../tampanda", "src"]
+pythonVersion = "3.10"
