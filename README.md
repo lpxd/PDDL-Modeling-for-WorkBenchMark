@@ -69,6 +69,7 @@ What we must deliver, what we aim for if time allows, and what we explicitly lea
 
 - map PDDL actions to `PickPlaceExecutor` calls in TAMPanda
 - resolve each action’s brick to a continuous pose via YAML lookup
+- MuJoCo scene with Duplo box proxies (`scene.py`) + table-frame map (`frames.py`)
 
 > **Note:** `stud` / `layer` / `rot` are for planning only.
 > Execution does not invert the grid, because reverting is lossy.
@@ -113,5 +114,12 @@ pip install -e ../tampanda --config-settings editable_mode=compat
 pip install -e .[dev]
 python scripts/check_env.py
 pytest
+```
+
+> **Note:** `pytest` may take several minutes: the suite includes full MuJoCo e2e smokes
+> (Tier 1–3). For a fast check without those:
+
+```bash
+pytest -m "not slow"
 ```
 

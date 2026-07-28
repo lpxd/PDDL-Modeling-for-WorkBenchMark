@@ -35,6 +35,9 @@ workbenchmark_pddl = ["pddl/*.pddl"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "slow: MuJoCo motion smokes (plan + PickPlaceExecutor)",
+]
 
 # Point the type checker at the shared prak4 venv and the local TAMPanda tree
 [tool.pyright]
