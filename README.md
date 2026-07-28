@@ -113,13 +113,13 @@ source /work/rleap1/aifr/prak4/venv/bin/activate
 pip install -e ../tampanda --config-settings editable_mode=compat
 pip install -e .[dev]
 python scripts/check_env.py
-pytest
+pytest -v
 ```
 
 > **Note:** `pytest` may take several minutes: the suite includes full MuJoCo e2e smokes
 > (Tier 1–3). For a fast check without those:
 
 ```bash
-pytest -m "not slow"
+pytest -v -m "not slow"
 ```
 
