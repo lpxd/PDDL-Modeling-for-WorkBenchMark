@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
+from typing import Protocol, cast
+
+import numpy as np
+from numpy.typing import NDArray
+from tampanda.environments.franka_env import FrankaEnvironment
+from tampanda.scenes import TABLE_SYMBOLIC_TEMPLATE, ArmSceneBuilder
 
 from workbenchmark_pddl.frames import TableFrame
 from workbenchmark_pddl.geometry import BRICK_SIZE_STUDS
 from workbenchmark_pddl.grid import LAYER_HEIGHT_M, STUD_PITCH_M
-from tampanda.scenes import ArmSceneBuilder, TABLE_SYMBOLIC_TEMPLATE
 from workbenchmark_pddl.task import BrickSpec, TaskSpec, Vec3
 
 # YAML colour names -> RGBA for geom override at instantiate time.
@@ -27,6 +32,38 @@ COLOR_RGBA: dict[str, list[float]] = {
 
 # Default RGBA for the bricks. (grey)
 _DEFAULT_RGBA = [0.7, 0.7, 0.7, 1.0]
+
+FloatArray = NDArray[np.float64]
+
+
+# Typed view of ArmSceneBuilder — TAMPanda stubs leave these members Unknown.
+class _TypedSceneBuilder(Protocol):
+
+    def add_resource(self, name: str, source: str) -> None: ...
+
+    def add_object(
+        self,
+        type_name: str,
+        pos: list[float],
+        *,
+        name: str | None = None,
+        quat: list[float] | None = None,
+        rgba: list[float] | None = None,
+    ) -> None: ...
+
+    def build_env(self, rate: float = 200.0) -> FrankaEnvironment: ...
+
+
+# Typed view of FrankaEnvironment pose helpers.
+class _TypedSimEnv(Protocol):
+    def set_object_pose(
+        self, body_name: str, pos: FloatArray, quat: FloatArray | None = None
+    ) -> None: ...
+
+    def reset_velocities(self) -> None: ...
+
+    def forward(self) -> None: ...
+
 
 # Calculate the  half size for a brick type.
 def nominal_half_size(brick_type: str) -> Vec3:
@@ -71,7 +108,7 @@ def make_lego_builder(
     task: TaskSpec,
     *,
     template_dir: Path | None = None,
-):
+) -> ArmSceneBuilder:
 
     # Create the template directory if it is not provided.
     if template_dir is None:
@@ -83,27 +120,33 @@ def make_lego_builder(
 
     # Create the ArmSceneBuilder.
     builder = ArmSceneBuilder()
+    scene = cast(_TypedSceneBuilder, cast(object, builder))
 
     # Add the symbolic table template.
-    builder.add_resource("table_symbolic", str(TABLE_SYMBOLIC_TEMPLATE))
+    scene.add_resource("table_symbolic", str(TABLE_SYMBOLIC_TEMPLATE))
 
     # Same solver tuning as the blocks domain (stable contacts for stacking).
-    builder._options = {
-        "timestep": "0.005",
-        "iterations": "5",
-        "ls_iterations": "8",
-        "integrator": "implicitfast",
-        "solver": "Newton",
-        "density": "1.2",
-        "viscosity": "0.01",
-    }
+    # SceneBuilder has no public setters; setattr avoids private-attr access warnings.
+    setattr(
+        builder,
+        "_options",
+        {
+            "timestep": "0.005",
+            "iterations": "5",
+            "ls_iterations": "8",
+            "integrator": "implicitfast",
+            "solver": "Newton",
+            "density": "1.2",
+            "viscosity": "0.01",
+        },
+    )
 
     # Set the option flags and custom numerics.
-    builder._option_flags = {"eulerdamp": "disable"}
-    builder._custom_numerics = {"max_contact_points": "12"}
+    setattr(builder, "_option_flags", {"eulerdamp": "disable"})
+    setattr(builder, "_custom_numerics", {"max_contact_points": "12"})
 
     # Add the symbolic table.
-    builder.add_object(
+    scene.add_object(
         "table_symbolic",
         name="simple_table",
         pos=[0.0, 0.4, 0.0],
@@ -120,8 +163,8 @@ def make_lego_builder(
             half = nominal_half_size(brick.type)
             # Create the path to the template file.
             path = template_dir / f"{brick.type}.xml"
-            path.write_text(brick_template_xml(half), encoding="utf-8")
-            builder.add_resource(brick.type, str(path.resolve()))
+            _ = path.write_text(brick_template_xml(half), encoding="utf-8")
+            scene.add_resource(brick.type, str(path.resolve()))
             registered.add(brick.type)
 
         # Calculate the half size.
@@ -129,7 +172,7 @@ def make_lego_builder(
         # Get the RGBA for the brick color.
         rgba = COLOR_RGBA.get(brick.color.lower(), _DEFAULT_RGBA)
         # Add the brick to the scene.
-        builder.add_object(
+        scene.add_object(
             brick.type,
             name=brick.name,
             pos=[100.0, 0.0, hz],
@@ -139,13 +182,19 @@ def make_lego_builder(
     return builder
 
 # Compile the task scene into a FrankaEnvironment.
-def build_lego_env(task: TaskSpec, *, rate: float = 200.0, template_dir: Path | None = None):
+def build_lego_env(
+    task: TaskSpec, *, rate: float = 200.0, template_dir: Path | None = None
+) -> FrankaEnvironment:
     # Compile the task scene into a FrankaEnvironment.
-    return make_lego_builder(task, template_dir=template_dir).build_env(rate=rate)
+    scene = cast(
+        _TypedSceneBuilder,
+        cast(object, make_lego_builder(task, template_dir=template_dir)),
+    )
+    return scene.build_env(rate=rate)
 
 # Teleport each brick to its pick-area pose in the sim frame.
 def place_initial_blocks(
-    env,
+    env: FrankaEnvironment,
     task: TaskSpec,
     frame: TableFrame | None = None,
 ) -> None:
@@ -154,24 +203,25 @@ def place_initial_blocks(
     if frame is None:
         frame = TableFrame()
 
+    sim = cast(_TypedSimEnv, cast(object, env))
+
     # For each initial brick.
     for brick in task.initial_blocks:
         # Get the center and quaternion for the brick.
         center, quat, _half = frame.pose_from_brick(brick)
-        env.set_object_pose(brick.name, center, quat)
+        sim.set_object_pose(brick.name, center, quat)
 
     # Reset the velocities.
     # Otherwise, the bricks will keep moving.
-    env.reset_velocities()
+    sim.reset_velocities()
 
     # Forward the environment.
     # This is needed to update the scene.
-    if hasattr(env, "forward"):
-        env.forward()
+    sim.forward()
 
 # Teleport one brick (e.g. after a failed place, for debugging).
 def place_brick(
-    env,
+    env: FrankaEnvironment,
     brick: BrickSpec,
     frame: TableFrame | None = None,
 ) -> None:
@@ -184,4 +234,4 @@ def place_brick(
     center, quat, _ = frame.pose_from_brick(brick)
     
     # Set the object pose.
-    env.set_object_pose(brick.name, center, quat)
+    cast(_TypedSimEnv, cast(object, env)).set_object_pose(brick.name, center, quat)

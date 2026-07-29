@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 import numpy as np
@@ -18,12 +19,12 @@ DEFAULT_SURFACE_Z = 0.27
 def euler_deg_to_quat_wxyz(rotation_deg: Vec3) -> NDArray[np.float64]:
     
     # Convert the Euler degrees to radians.
-    roll, pitch, yaw = np.deg2rad(np.asarray(rotation_deg, dtype=float))
+    roll, pitch, yaw = (math.radians(angle) for angle in rotation_deg)
 
     # Calculate the sine and cosine of the roll, pitch, and yaw.
-    cr, sr = np.cos(roll / 2.0), np.sin(roll / 2.0)
-    cp, sp = np.cos(pitch / 2.0), np.sin(pitch / 2.0)
-    cy, sy = np.cos(yaw / 2.0), np.sin(yaw / 2.0)
+    cr, sr = math.cos(roll / 2.0), math.sin(roll / 2.0)
+    cp, sp = math.cos(pitch / 2.0), math.sin(pitch / 2.0)
+    cy, sy = math.cos(yaw / 2.0), math.sin(yaw / 2.0)
 
     # Calculate the quaternion.
     return np.array(
@@ -33,7 +34,7 @@ def euler_deg_to_quat_wxyz(rotation_deg: Vec3) -> NDArray[np.float64]:
             cr * sp * cy + sr * cp * sy,
             cr * cp * sy - sr * sp * cy,
         ],
-        dtype=float,
+        dtype=np.float64,
     )
 
 # A frame for the table.
@@ -63,7 +64,7 @@ class TableFrame:
                 self.origin_xy[1] + y,
                 self.surface_z + z + half_z,
             ],
-            dtype=float,
+            dtype=np.float64,
         )
 
     # Convert a brick specification to a center position, quaternion, and half size.
@@ -72,10 +73,11 @@ class TableFrame:
     ) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
 
         # Convert the half size to a numpy array.
-        half = np.asarray(half_size_for(brick), dtype=float)
+        half_x, half_y, half_z = half_size_for(brick)
+        half = np.array([half_x, half_y, half_z], dtype=np.float64)
 
         # Convert the position to a center position.
-        center = self.center_from_yaml(brick.pos, float(half[2]))
+        center = self.center_from_yaml(brick.pos, half_z)
 
         # Convert the rotation to a quaternion.
         quat = euler_deg_to_quat_wxyz(brick.rotation)
