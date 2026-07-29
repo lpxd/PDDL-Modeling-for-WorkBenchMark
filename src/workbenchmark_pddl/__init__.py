@@ -8,10 +8,12 @@ from workbenchmark_pddl.bridge import (
     make_lego_bridge,
 )
 from workbenchmark_pddl.execution import GroundedAction, ground_plan, ground_plan_action
+from workbenchmark_pddl.frames import TableFrame, euler_deg_to_quat_wxyz
 from workbenchmark_pddl.grid import DiscretePose, quantize_brick, quantize_pose
 from workbenchmark_pddl.planner import PlanAction, PlanResult, plan_task
 from workbenchmark_pddl.problem import render_problem, write_problem
 from workbenchmark_pddl.problem_builder import ProblemBuilder
+from workbenchmark_pddl.scene import build_lego_env, make_lego_builder, place_initial_blocks
 from workbenchmark_pddl.task import BrickSpec, TaskSpec, load_task
 
 __version__ = "0.1.0"
@@ -33,11 +35,15 @@ __all__ = [
     "GroundedAction",
     "ground_plan",
     "ground_plan_action",
+    "TableFrame",
+    "euler_deg_to_quat_wxyz",
     "make_lego_bridge",
     "execute_grounded_action",
     "execute_grounded_plan",
     "execute_plan",
     "execute_plan_on_bridge",
+    "make_lego_builder",
+    "build_lego_env",
+    "place_initial_blocks",
     "__version__",
 ]
-

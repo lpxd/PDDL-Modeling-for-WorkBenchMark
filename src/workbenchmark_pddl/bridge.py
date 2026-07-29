@@ -18,11 +18,16 @@ from workbenchmark_pddl.execution import (
     half_size_for,
     yaml_brick_name,
 )
+from workbenchmark_pddl.frames import TableFrame, euler_deg_to_quat_wxyz
 from workbenchmark_pddl.pddl_names import GRIPPER_NAME
 from workbenchmark_pddl.planner import PlanResult
 from workbenchmark_pddl.problem import domain_path
-from workbenchmark_pddl.task import TaskSpec, Vec3
+from workbenchmark_pddl.task import TaskSpec
+from tampanda.environments.franka_env import FrankaEnvironment
 from tampanda.tamp import DomainBridge
+
+# Top-down place EE quat (TAMPanda TOP_DOWN_Y).
+_PLACE_EE_QUAT = np.array([0.0, 1.0, 0.0, 0.0])
 
 # A minimal surface of TAMPanda's PickPlaceExecutor used here.
 class PickPlaceLike(Protocol):
@@ -48,44 +53,78 @@ class PickPlaceLike(Protocol):
         place_clearance: float = 0.003,
     ) -> bool: ...
 
+# Convert a YAML pose to an executor pose.
+def _executor_pose(
+    pos,
+    rotation_deg,
+    half_size,
+    frame: TableFrame | None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
-# Convert XYZ (roll, pitch, yaw) degrees to MuJoCo wxyz quaternion.
-def euler_deg_to_quat_wxyz(rotation_deg: Vec3) -> np.ndarray:
+    # Convert the half size to a numpy array.
+    half = np.asarray(half_size, dtype=float)
 
-    # Convert the rotation degrees to radians.
-    roll, pitch, yaw = np.deg2rad(np.asarray(rotation_deg, dtype=float))
+    # If no frame is provided, return the pose.
+    if frame is None:
 
-    # Compute the cosine and sine of the roll, pitch, and yaw.
-    cr, sr = np.cos(roll / 2.0), np.sin(roll / 2.0)
-    cp, sp = np.cos(pitch / 2.0), np.sin(pitch / 2.0)
-    cy, sy = np.cos(yaw / 2.0), np.sin(yaw / 2.0)
+        # Return the pose.
+        return (
+            np.asarray(pos, dtype=float),
+            euler_deg_to_quat_wxyz(rotation_deg),
+            half,
+        )
 
-    # Compute the quaternion.
-    return np.array(
-        [
-            cr * cp * cy + sr * sp * sy,
-            sr * cp * cy - cr * sp * sy,
-            cr * sp * cy + sr * cp * sy,
-            cr * cp * sy - sr * sp * cy,
-        ],
-        dtype=float,
-    )
+    # Calculate the center of the block.
+    center = frame.center_from_yaml(pos, float(half[2]))
 
+    # Return the pose.
+    return center, euler_deg_to_quat_wxyz(rotation_deg), half
+
+# Place while ignoring collisions with task bricks (dense Tier-3 stacks).
+def _place_with_brick_exceptions(
+    executor: PickPlaceLike,
+    env: Any,
+    brick_names: list[str],
+    *args: Any,
+    **kwargs: Any,
+) -> bool:
+
+    # If the environment is None or does not have add_collision_exception, return the place.
+    if env is None or not hasattr(env, "add_collision_exception"):
+        return executor.place(*args, **kwargs)
+
+    # Get the collision exceptions.
+    already = set(getattr(env, "collision_exceptions", []) or [])
+
+    # Create a list of added collision exceptions.
+    added: list[str] = []
+
+    # Add the collision exceptions.
+    for name in brick_names:
+        if name not in already:
+            env.add_collision_exception(name)
+            added.append(name)
+
+    # Try to place the block.
+    try:
+        return executor.place(*args, **kwargs)
+    finally:
+        for name in added:
+            env.remove_collision_exception(name)
 
 # Execute a grounded action on a PickPlaceLike executor.
 def execute_grounded_action(
     executor: PickPlaceLike,
     action: GroundedAction,
+    frame: TableFrame | None = None,
 ) -> bool:
 
-    # Convert the position and half-size to numpy arrays.
-    pos = np.asarray(action.pos, dtype=float)
-    half = np.asarray(action.half_size, dtype=float)
+    # Convert the action to an executor pose.
+    pos, quat, half = _executor_pose(
+        action.pos, action.rotation_deg, action.half_size, frame
+    )
 
-    # Convert the rotation degrees to a quaternion.
-    quat = euler_deg_to_quat_wxyz(action.rotation_deg)
-
-    # Dispatch the action to the executor.
+    # If the action is a pick, return the result of the pick.
     if action.kind == "pick":
         return executor.pick(action.brick, pos, half, quat)
 
@@ -96,7 +135,7 @@ def execute_grounded_action(
         return executor.place(
             action.brick,
             pos,
-            ee_quat=None,
+            ee_quat=_PLACE_EE_QUAT,
             target_block_name=action.support_brick,
         )
 
@@ -108,14 +147,12 @@ def execute_grounded_action(
 def execute_grounded_plan(
     executor: PickPlaceLike,
     actions: tuple[GroundedAction, ...] | list[GroundedAction],
+    frame: TableFrame | None = None,
 ) -> bool:
 
     # Run the grounded actions in order.
     for action in actions:
-
-        # Execute the grounded action.
-        # If the action fails, return False.
-        if not execute_grounded_action(executor, action):
+        if not execute_grounded_action(executor, action, frame=frame):
             return False
 
     # Return True if all actions succeeded.
@@ -127,6 +164,7 @@ def make_lego_bridge(
     env: Any,
     task: TaskSpec,
     executor: PickPlaceLike | None = None,
+    frame: TableFrame | None = None,
 ):
     # Create a DomainBridge for the task.
     bridge = DomainBridge(domain_path(), env)
@@ -141,7 +179,9 @@ def make_lego_bridge(
     if executor is None:
         return bridge
 
-    # Register the pick action.
+    # Get the brick names from the initial blocks.
+    brick_names = [b.name for b in task.initial_blocks]
+
     @bridge.action("pick")
     def exec_pick(env, fluents, gripper, brick, stud, layer, rot, area, brick_type):
 
@@ -150,16 +190,33 @@ def make_lego_bridge(
 
         # Get the brick specification from the task.
         spec = brick_for_pick(task, name)
+        half = half_size_for(spec)
+        pos, quat, half_arr = _executor_pose(spec.pos, spec.rotation, half, frame)
 
-        # Pick the block.
-        ok = executor.pick(
-            name,
-            np.asarray(spec.pos, dtype=float),
-            np.asarray(half_size_for(spec), dtype=float),
-            euler_deg_to_quat_wxyz(spec.rotation),
-        )
+        # Prefer top-down grasps
+        # FRONT last (place uses a fixed top-down EE quat).
 
-        # If the pick fails, return False.
+        # Create a list of candidates.
+        candidates = None
+
+        # Get the grasp planner.
+        gp = getattr(executor, "grasp_planner", None)
+
+        # If the grasp planner is not None.
+        if gp is not None:
+
+            # Import the GraspType from the grasp_planner module.
+            from tampanda.planners.grasp_planner import GraspType
+
+            # Generate the candidates.
+            raw = gp.generate_candidates(pos, half_arr, quat)
+
+            # Separate the candidates into top and front.
+            top = [c for c in raw if c.grasp_type != GraspType.FRONT]
+            front = [c for c in raw if c.grasp_type == GraspType.FRONT]
+            candidates = top + front
+
+        ok = executor.pick(name, pos, half_arr, quat, candidates=candidates)
         if not ok:
             return False, {}
 
@@ -179,15 +236,25 @@ def make_lego_bridge(
         # Get the brick specification from the task.
         spec = brick_for_place(task, name)
 
-        # Place the block.
-        ok = executor.place(
+        # Calculate the half size.
+        half = half_size_for(spec)
+
+        # Calculate the executor pose.
+        pos, _quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
+
+        # Place the block while ignoring collisions with task bricks.
+        ok = _place_with_brick_exceptions(
+            executor,
+            env,
+            brick_names,
             name,
-            np.asarray(spec.pos, dtype=float),
-            ee_quat=None,
+            pos,
+            ee_quat=_PLACE_EE_QUAT,
             target_block_name=None,
+            approach_height=0.20,
         )
 
-        # If the place fails, return False.
+        # Return False if the place failed.
         if not ok:
             return False, {}
 
@@ -223,12 +290,22 @@ def make_lego_bridge(
         # Get the brick specification from the task.
         spec = brick_for_place(task, top_name)
 
-        # Stack the block.
-        ok = executor.place(
+        # Calculate the half size.
+        half = half_size_for(spec)
+
+        # Calculate the executor pose.
+        pos, _quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
+
+        # Place the block while ignoring collisions with task bricks.
+        ok = _place_with_brick_exceptions(
+            executor,
+            env,
+            brick_names,
             top_name,
-            np.asarray(spec.pos, dtype=float),
-            ee_quat=None,
+            pos,
+            ee_quat=_PLACE_EE_QUAT,
             target_block_name=bottom_name,
+            approach_height=0.20,
         )
 
         # If the stack fails, return False.
@@ -243,24 +320,46 @@ def make_lego_bridge(
 
     return bridge
 
-# Execute a PDDL plan on  DomainBridge.
-def execute_plan_on_bridge(bridge, plan: PlanResult) -> bool:
+# Teleport the Panda to HOME.
+def _snap_arm_home(env) -> None:
+    
+    # Calculate the number of joints to reset.
+    n = min(9, len(FrankaEnvironment.HOME_QPOS), env.data.qpos.shape[0])
 
-    # If the plan is not solved, raise an error.
+    # Reset the joints.
+    env.data.qpos[:n] = FrankaEnvironment.HOME_QPOS[:n]
+
+    # Reset the velocities.
+    if hasattr(env, "reset_velocities"):
+        env.reset_velocities()
+
+    # Forward the environment.
+    # This is needed to update the scene.
+    if hasattr(env, "forward"):
+        env.forward()
+
+# Execute a PDDL plan on a DomainBridge.
+def execute_plan_on_bridge(
+    bridge,
+    plan: PlanResult,
+    *,
+    return_home: bool = False,
+) -> bool:
+
+    # Raise an error if the plan is not solved.
     if not plan.solved:
         raise ValueError(f"cannot execute unsolved plan ({plan.status})")
 
-    # Execute the plan actions on the bridge.
+    # Execute the actions in the plan.
     for action in plan.actions:
-
-        # Execute the action on the bridge.
+        # Execute the action.
         ok, _ = bridge.execute_action(action.name, *action.params)
-
         # If the action fails, return False.
         if not ok:
             return False
-
-    # Return True if all actions succeeded.
+        # If return_home is True, snap the arm to HOME.
+        if return_home:
+            _snap_arm_home(bridge.env)
     return True
 
 
@@ -269,7 +368,8 @@ def execute_plan(
     executor: PickPlaceLike,
     task: TaskSpec,
     plan: PlanResult,
+    frame: TableFrame | None = None,
 ) -> bool:
 
-    # Ground the plan via YAML and run it on the executor.
-    return execute_grounded_plan(executor, ground_plan(task, plan))
+    # Execute the grounded plan.
+    return execute_grounded_plan(executor, ground_plan(task, plan), frame=frame)
