@@ -27,6 +27,9 @@ proposal.pdf
 MUJOCO_LOG.TXT
 *.log
 
+# Evaluation outputs (regenerate with scripts/eval_*.py)
+results/
+
 # OS / editor
 .DS_Store
 .idea/

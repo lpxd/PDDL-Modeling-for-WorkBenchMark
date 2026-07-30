@@ -123,3 +123,14 @@ pytest -v
 pytest -v -m "not slow"
 ```
 
+## 📈 Evaluation (planning)
+
+Batch planning only (no Simulation). Tiers 1, 2, and 3, first 20 tasks each.
+
+```bash
+python scripts/eval_planning.py
+# or: python scripts/eval_planning.py --tiers 1,2,3 --n 20 --out-dir results
+```
+
+Writes `results/planning.jsonl` and `results/planning.csv`.
+
