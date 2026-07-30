@@ -142,7 +142,8 @@
     )
   )
 
-  ;; Stack onto a clear support when can-attach holds for the two anchors.
+  ;; Stack when can-attach holds; bottom stays clear so several tops can share it.
+  ;; Same top cell is still blocked by free/occupied on (?top-s, ?top-l).
   (:action stack
     :parameters (
       ?g - endeffector
@@ -160,7 +161,6 @@
     )
     :precondition (and
       (holding ?g ?top)
-      (clear ?bottom)
       (at-stud ?bottom ?bot-s)
       (at-layer ?bottom ?bot-l)
       (oriented ?bottom ?bot-r)
@@ -182,7 +182,6 @@
       (clear ?top)
       (occupied ?top-s ?top-l)
       (not (holding ?g ?top))
-      (not (clear ?bottom))
       (not (free ?top-s ?top-l))
     )
   )
