@@ -4,7 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from workbenchmark_pddl.planner import plan_task
+from workbenchmark_pddl.planner import (
+    plan_result_from_dict,
+    plan_result_to_dict,
+    plan_task,
+)
 from workbenchmark_pddl.task import load_task
 
 # Integration tests: YAML -> PDDL -> pyperplan finds a plan.
@@ -47,3 +51,19 @@ def test_pyperplan_solves_dataset_task(fixture_name: str, min_actions: int, requ
     moved = {a.params[1] for a in result.actions if a.name in {"place", "stack"}}
     for brick in task.goal_blocks:
         assert f"b_{brick.name}" in moved
+
+
+# Round-trip PlanResult through dict form used by eval artifacts.
+def test_plan_result_dict_roundtrip(tier1_task_001: Path):
+
+    # Plan the task.
+    result = plan_task(load_task(tier1_task_001))
+
+    # Assert the plan was found.
+    assert result.solved
+
+    # Restore the plan result from the dictionary.
+    restored = plan_result_from_dict(plan_result_to_dict(result))
+
+    # Assert the restored plan result is equal to the original plan result.
+    assert restored == result
