@@ -1,0 +1,9 @@
+{
+  "tier": 3,
+  "task_id": 8,
+  "solved": true,
+  "status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "plan_length": 12,
+  "planning_time_s": 34.8909,
+  "path": "/work/rleap1/aifr/prak4/dataset/ground_truth/tier3/task_008.yaml"
+}

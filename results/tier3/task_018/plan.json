@@ -1,0 +1,223 @@
+{
+  "solved": true,
+  "status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "actions": [
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_1",
+        "stud_16_m14",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_2x2_brick_1",
+        "stud_1_9",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_4",
+        "stud_31_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_4",
+        "b_2x2_brick_1",
+        "stud_1_10",
+        "stud_1_9",
+        "layer_1",
+        "layer_0",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_2x2",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_7",
+        "stud_23_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_4x2_brick_7",
+        "b_2x2_brick_4",
+        "stud_1_11",
+        "stud_1_10",
+        "layer_2",
+        "layer_1",
+        "rot_0",
+        "rot_90",
+        "assembly_area",
+        "type_4x2",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "stud_31_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "stud_m1_11",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_8",
+        "stud_38_m14",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_8",
+        "b_4x2_brick_2",
+        "stud_m1_9",
+        "stud_m1_11",
+        "layer_1",
+        "layer_0",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_2x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_5",
+        "stud_16_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_4x2_brick_5",
+        "b_4x2_brick_2",
+        "stud_0_12",
+        "stud_m1_11",
+        "layer_1",
+        "layer_0",
+        "rot_0",
+        "rot_90",
+        "assembly_area",
+        "type_4x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_3",
+        "stud_24_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_2x2_brick_3",
+        "stud_3_10",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_6",
+        "stud_39_m7",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_6",
+        "b_2x2_brick_3",
+        "stud_3_11",
+        "stud_3_10",
+        "layer_1",
+        "layer_0",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_2x2",
+        "type_2x2"
+      ]
+    }
+  ]
+}
