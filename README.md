@@ -216,7 +216,7 @@ python scripts/eval_planning.py --task tier3/task_020
 ## 🤖 Evaluation (execution)
 
 Uses saved `plan.json` from the planning eval (no re-planning) and runs them
-in MuJoCo via DomainBridge / PickPlace. Default: Tier 1–2, N = 20.
+in MuJoCo via DomainBridge / PickPlace. Default: Tier 1–3, N = 20.
 
 > **Note:** Each task writes `execution_metrics.json` immediately and updates
 > `execution_summary.jsonl` / `execution_summary.csv`.
@@ -236,3 +236,4 @@ python scripts/eval_execution.py --task tier2/task_005
 ```
 
 > **Note:** Use **tmux** for long runs (`tmux new -s exec`, detach with Ctrl+b d, reattach with `tmux attach -t exec`).
+

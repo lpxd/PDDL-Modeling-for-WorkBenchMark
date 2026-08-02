@@ -617,8 +617,8 @@ def main(argv: list[str] | None = None) -> int:
     _ = parser.add_argument(
         "--tiers",
         type=parse_tiers,
-        default=[1, 2],
-        help="Comma-separated tiers (default: 1,2; ignored if --task is set)",
+        default=[1, 2, 3],
+        help="Comma-separated tiers (default: 1,2,3; ignored if --task is set)",
     )
 
     # Add the n argument.
