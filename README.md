@@ -164,26 +164,28 @@ The result directory layout is as follows:
 
 ```
 results/
-├── planning/
-│   ├── tier1/
-│   │   ├── task_001/
-│   │   │   ├── plan.json
-│   │   │   └── planning_metrics.json
-│   │   └──   ... 
-│   └── tier2/
-│   │   ├── task_001/
-│   │   │   ├── plan.json
-│   │   │   └── planning_metrics.json
-│   │   └──   ...
-│   └── tier3/
-│   │   ├── task_001/
-│   │   │   ├── plan.json
-│   │   │   └── planning_metrics.json
-│   │   └──   ...
-|   ├── planning_summary.jsonl
-|   └── planning_summary.csv
-├── execution/
-...
+├── planning_summary.jsonl
+├── planning_summary.csv
+├── execution_summary.jsonl
+├── execution_summary.csv
+├── tier1/
+│   ├── task_001/
+│   │   ├── plan.json
+│   │   ├── planning_metrics.json
+│   │   └── execution_metrics.json
+│   └── ...
+├── tier2/
+│   ├── task_001/
+│   │   ├── plan.json
+│   │   ├── planning_metrics.json
+│   │   └── execution_metrics.json
+│   └── ...
+└── tier3/
+    ├── task_001/
+    │   ├── plan.json
+    │   ├── planning_metrics.json
+    │   └── execution_metrics.json
+    └── ...
 ```
 
 
@@ -213,4 +215,24 @@ python scripts/eval_planning.py --task tier3/task_020
 
 ## 🤖 Evaluation (execution)
 
-Uses the plans from the planning evaluation and executes them in MuJoCo via DomainBridge (PickPlace).
+Uses saved `plan.json` from the planning eval (no re-planning) and runs them
+in MuJoCo via DomainBridge / PickPlace. Default: Tier 1–2, N = 20.
+
+> **Note:** Each task writes `execution_metrics.json` immediately and updates
+> `execution_summary.jsonl` / `execution_summary.csv`.
+
+To evaluate all default tasks:
+
+```bash
+python scripts/eval_execution.py
+# or: python scripts/eval_execution.py --tiers 1,2,3 --n 20 --out-dir results
+```
+
+To (re)evaluate a specific task:
+
+```bash
+python scripts/eval_execution.py --task 1/1
+python scripts/eval_execution.py --task tier2/task_005
+```
+
+> **Note:** Use **tmux** for long runs (`tmux new -s exec`, detach with Ctrl+b d, reattach with `tmux attach -t exec`).
