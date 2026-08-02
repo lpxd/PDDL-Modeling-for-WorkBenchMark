@@ -105,15 +105,41 @@ initial layout and goal. It is an explicit project simplification.
 
 ## ⚙️ Setup
 
-Python 3.10+, TAMPanda at `../tampanda`, dataset at `../dataset`.
+Requires **Python 3.10+** and this sibling layout (names matter for imports / pyright):
+
+```text
+parent/
+├── venv/                              # shared virtualenv
+├── tampanda/                          # TAMPanda (editable install)
+├── dataset/                           # WorkBenchMark tasks
+└── PDDL-Modeling-for-WorkBenchMark/   # this repo (on the course machine: Project/)
+```
+
+### From scratch
 
 ```bash
-cd /work/rleap1/aifr/prak4/Project
-source /work/rleap1/aifr/prak4/venv/bin/activate
-pip install -e ../tampanda --config-settings editable_mode=compat
-pip install -e .[dev]
+# 1) Parent directory that will hold the siblings
+mkdir -p ~/workbench && cd ~/workbench
+
+# 2) Clone siblings
+git clone https://github.com/snoato/manipulation.git tampanda
+git clone https://github.com/WorkBenchMark/dataset.git dataset
+git clone https://github.com/IX0Y3/PDDL-Modeling-for-WorkBenchMark.git
+cd PDDL-Modeling-for-WorkBenchMark
+
+# 3) Create the shared venv next to this repo (not inside it)
+python3.12 -m venv ../venv
+source ../venv/bin/activate
+python -m pip install -U pip setuptools wheel
+
+# 4) Editable installs + QP solver used by TAMPanda IK (mink)
+python -m pip install -e ../tampanda --config-settings editable_mode=compat
+python -m pip install -e .[dev]    # quote for zsh: ".[dev]"
+python -m pip install quadprog
+
+# 5) Smoke-check the toolchain
 python scripts/check_env.py
-pytest -v
+pytest -v              
 ```
 
 > **Note:** `pytest` may take several minutes: the suite includes full MuJoCo e2e smokes
@@ -123,7 +149,7 @@ pytest -v
 pytest -v -m "not slow"
 ```
 
-
+Use `python -m pip` (not a bare system `pip3`) so installs go into the venv!
 
 ## 📂 Evaluation (Results)
 
