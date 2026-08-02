@@ -88,30 +88,6 @@
       "name": "pick",
       "params": [
         "gripper",
-        "b_4x2_brick_2",
-        "stud_16_m13",
-        "layer_0",
-        "rot_0",
-        "pick_area",
-        "type_4x2"
-      ]
-    },
-    {
-      "name": "place",
-      "params": [
-        "gripper",
-        "b_4x2_brick_2",
-        "stud_m4_9",
-        "layer_0",
-        "rot_90",
-        "assembly_area",
-        "type_4x2"
-      ]
-    },
-    {
-      "name": "pick",
-      "params": [
-        "gripper",
         "b_4x2_brick_5",
         "stud_38_m7",
         "layer_0",
@@ -163,6 +139,30 @@
         "rot_90",
         "assembly_area",
         "type_2x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "stud_16_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "stud_m4_9",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
         "type_4x2"
       ]
     }

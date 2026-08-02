@@ -6,59 +6,6 @@
       "name": "pick",
       "params": [
         "gripper",
-        "b_2x2_brick_2",
-        "stud_16_m13",
-        "layer_0",
-        "rot_0",
-        "pick_area",
-        "type_2x2"
-      ]
-    },
-    {
-      "name": "place",
-      "params": [
-        "gripper",
-        "b_2x2_brick_2",
-        "stud_0_7",
-        "layer_0",
-        "rot_90",
-        "assembly_area",
-        "type_2x2"
-      ]
-    },
-    {
-      "name": "pick",
-      "params": [
-        "gripper",
-        "b_2x2_brick_4",
-        "stud_24_m13",
-        "layer_0",
-        "rot_0",
-        "pick_area",
-        "type_2x2"
-      ]
-    },
-    {
-      "name": "stack",
-      "params": [
-        "gripper",
-        "b_2x2_brick_4",
-        "b_2x2_brick_2",
-        "stud_m1_8",
-        "stud_0_7",
-        "layer_1",
-        "layer_0",
-        "rot_90",
-        "rot_90",
-        "assembly_area",
-        "type_2x2",
-        "type_2x2"
-      ]
-    },
-    {
-      "name": "pick",
-      "params": [
-        "gripper",
         "b_4x2_brick_1",
         "stud_32_m14",
         "layer_0",
@@ -106,6 +53,59 @@
         "assembly_area",
         "type_2x2",
         "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_4",
+        "stud_24_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_4",
+        "b_4x2_brick_1",
+        "stud_m1_8",
+        "stud_m2_9",
+        "layer_1",
+        "layer_0",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_2x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_2",
+        "stud_16_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_2x2_brick_2",
+        "stud_0_7",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_2x2"
       ]
     },
     {

@@ -4,6 +4,6 @@
   "solved": true,
   "status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
   "plan_length": 8,
-  "planning_time_s": 3.0231,
-  "path": "/work/rleap1/aifr/prak4/dataset/ground_truth/tier3/task_010.yaml"
+  "planning_time_s": 0.9293,
+  "path": "/Users/mo/Documents/GitHub/dataset/ground_truth/tier3/task_010.yaml"
 }
