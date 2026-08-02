@@ -1,0 +1,12 @@
+{
+  "tier": 3,
+  "task_id": 13,
+  "success": true,
+  "status": "OK",
+  "plan_length": 8,
+  "actions_ok": 8,
+  "failed_action": "",
+  "execution_time_s": 63.4987,
+  "path": "/Users/mo/Documents/GitHub/dataset/ground_truth/tier3/task_013.yaml",
+  "plan_path": "/Users/mo/Documents/GitHub/PDDL-Modeling-for-WorkBenchMark/results/tier3/task_013/plan.json"
+}
