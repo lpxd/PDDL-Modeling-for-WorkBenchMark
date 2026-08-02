@@ -192,7 +192,7 @@ results/
 
 ## 🧠 Evaluation (planning)
 
-Batch planning only (no Simulation). Tiers 1, 2, and 3, first 20 tasks each.
+Batch planning only (no Simulation). Default: Tier 1–3, N = 20.
 
 > **Note:** Each solved task generates a `plan.json` and `planning_metrics.json` file.
 > It also creates a summary file `planning_summary.jsonl` and `planning_summary.csv`.
@@ -217,6 +217,10 @@ python scripts/eval_planning.py --task tier3/task_020
 
 Uses saved `plan.json` from the planning eval (no re-planning) and runs them
 in MuJoCo via DomainBridge / PickPlace. Default: Tier 1–3, N = 20.
+
+> **Important:** Run planning first (`python scripts/eval_planning.py`).
+> Execution loads existing `results/tierN/task_XXX/plan.json` and will skip
+> or fail tasks that have no saved plan.
 
 > **Note:** Each task writes `execution_metrics.json` immediately and updates
 > `execution_summary.jsonl` / `execution_summary.csv`.
