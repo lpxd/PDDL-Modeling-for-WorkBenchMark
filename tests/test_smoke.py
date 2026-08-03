@@ -3,11 +3,17 @@
 from pathlib import Path
 
 import pytest
+from tampanda.planners.pick_place import PickPlaceExecutor
+from tampanda.planners.rrt_star import RRTStar
 
 from workbenchmark_pddl.bridge import execute_plan_on_bridge, make_lego_bridge
 from workbenchmark_pddl.frames import TableFrame
 from workbenchmark_pddl.planner import plan_task
-from workbenchmark_pddl.scene import build_lego_env, place_initial_blocks
+from workbenchmark_pddl.scene import (
+    build_lego_env,
+    make_lego_grasp_planner,
+    place_initial_blocks,
+)
 from workbenchmark_pddl.task import load_task
 
 # Run the full plan in the sim.
@@ -18,10 +24,6 @@ def _run_full_plan_in_sim(task_path: Path, tmp_path: Path) -> None:
     pytest.importorskip("mujoco")
     pytest.importorskip("tampanda")
 
-    from tampanda.planners.grasp_planner import GraspPlanner
-    from tampanda.planners.pick_place import PickPlaceExecutor
-    from tampanda.planners.rrt_star import RRTStar
-
     # Load the task.
     task = load_task(task_path)
 
@@ -29,9 +31,7 @@ def _run_full_plan_in_sim(task_path: Path, tmp_path: Path) -> None:
     frame = TableFrame()
 
     # Build the environment.
-    env = build_lego_env(task, template_dir=tmp_path)
-
-    # Place the initial bricks.
+    env = build_lego_env(task, template_dir=tmp_path / "templates")
     place_initial_blocks(env, task, frame=frame)
 
     # Plan the task.
@@ -43,8 +43,8 @@ def _run_full_plan_in_sim(task_path: Path, tmp_path: Path) -> None:
     # Create the planner.
     planner = RRTStar(env)
 
-    # Create the grasp planner.
-    grasp = GraspPlanner(table_z=frame.surface_z)
+    # Duplo-tuned grasp height so fingers close around the brick
+    grasp = make_lego_grasp_planner(table_z=frame.surface_z)
 
     # Create the executor.
     executor = PickPlaceExecutor(

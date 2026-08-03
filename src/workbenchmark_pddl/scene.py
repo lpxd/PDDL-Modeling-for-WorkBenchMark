@@ -2,16 +2,20 @@
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
 from typing import Protocol, cast
 
 import numpy as np
 from numpy.typing import NDArray
 from tampanda.environments.franka_env import FrankaEnvironment
-from tampanda.scenes import TABLE_SYMBOLIC_TEMPLATE, ArmSceneBuilder
+from tampanda.planners.grasp_planner import (
+    FINGER_TIP_BELOW,
+    GraspPlanner,
+    GraspType,
+)
+from tampanda.scenes import ArmSceneBuilder
 
-from workbenchmark_pddl.frames import TableFrame
+from workbenchmark_pddl.frames import TableFrame, DEFAULT_SURFACE_Z
 from workbenchmark_pddl.geometry import BRICK_SIZE_STUDS
 from workbenchmark_pddl.grid import LAYER_HEIGHT_M, STUD_PITCH_M
 from workbenchmark_pddl.task import BrickSpec, TaskSpec, Vec3
@@ -33,10 +37,25 @@ COLOR_RGBA: dict[str, list[float]] = {
 # Default RGBA for the bricks. (grey)
 _DEFAULT_RGBA = [0.7, 0.7, 0.7, 1.0]
 
+# The assets directory.
+_ASSETS_DIR = Path(__file__).resolve().parent / "assets"
+
+# Wider than TAMPanda table_symbolic so Tier-3 pick/goal XY stay on the surface.
+_TABLE_TEMPLATE = _ASSETS_DIR / "table_workbenchmark.xml"
+
+# Duplo bricks are ~19mm tall. TAMPanda's default table_clearance (25mm) lifts
+# top-down grasps above the brick so fingers never close around it.
+DUPLO_GRASP_TABLE_CLEARANCE_M = 0.002
+
+# Sink EE slightly so the brick seats between the finger pads.
+DUPLO_GRASP_DEPTH_BIAS_M = 0.008
+
+# Typed array of floats.
 FloatArray = NDArray[np.float64]
 
 
-# Typed view of ArmSceneBuilder — TAMPanda stubs leave these members Unknown.
+# Typed view of ArmSceneBuilder
+# TAMPanda stubs leave these members Unknown.
 class _TypedSceneBuilder(Protocol):
 
     def add_resource(self, name: str, source: str) -> None: ...
@@ -65,43 +84,114 @@ class _TypedSimEnv(Protocol):
     def forward(self) -> None: ...
 
 
-# Calculate the  half size for a brick type.
+# Get the asset path for a brick type.
+def brick_asset_path(brick_type: str) -> Path:
+
+    # Get the path to the brick asset.
+    path = _ASSETS_DIR / f"{brick_type}.xml"
+
+    # If the asset is not found, raise an error.
+    if not path.is_file():
+        raise FileNotFoundError(f"missing brick asset for {brick_type!r}: {path}")
+    return path
+
+
+# Calculate the half size for a brick type.
 def nominal_half_size(brick_type: str) -> Vec3:
 
     # Get the width and depth of the brick in studs.
     width_studs, depth_studs = BRICK_SIZE_STUDS[brick_type]
+
+    # Calculate the half size.
     return (
         width_studs * STUD_PITCH_M / 2.0,
         depth_studs * STUD_PITCH_M / 2.0,
         LAYER_HEIGHT_M / 2.0,
     )
 
-# Create the XML for a brick template.
-def brick_template_xml(half_size: Vec3, *, mass: float | None = None) -> str:
-    
-    # Get the half sizes.
-    hx, hy, hz = half_size
 
-    # Calculate the mass if it is not provided.
-    if mass is None:
-        # Calculate the volume of the brick.
-        volume = (2.0 * hx) * (2.0 * hy) * (2.0 * hz)
-        mass = max(0.02, volume * 800.0)  # ~Duplo-ish density
-    # Solid-box principal inertias about centre (sides = 2*half).
-    ixx = (1.0 / 3.0) * mass * (hy * hy + hz * hz)
-    iyy = (1.0 / 3.0) * mass * (hx * hx + hz * hz)
-    izz = (1.0 / 3.0) * mass * (hx * hx + hy * hy)
+# GraspPlanner tuned so top-down fingers close around Duplo height, not above it.
+def make_lego_grasp_planner(*, table_z: float = DEFAULT_SURFACE_Z) -> object:
 
-    # Return the XML for the brick template.
-    return (
-        '<body pos="0 0 0">\n'
-        '  <joint name="_freejoint" type="free"/>\n'
-        f'  <inertial mass="{mass:.6g}" pos="0 0 0" '
-        f'diaginertia="{ixx:.6g} {iyy:.6g} {izz:.6g}"/>\n'
-        f'  <geom name="_geom" type="box" size="{hx:.6g} {hy:.6g} {hz:.6g}" '
-        'rgba="0.8 0.2 0.2 1" solimp="0.99 0.99 0.01" solref="0.02 1"/>\n'
-        "</body>\n"
+    # Create the grasp planner.
+    planner = GraspPlanner(
+
+        # Set the table z.
+        table_z=table_z,
+
+        # Set the table clearance.
+        table_clearance=DUPLO_GRASP_TABLE_CLEARANCE_M,
+
+        # Set the approach distance.
+        approach_dist=0.08,
+
+         # Shorter standoff/lift so the hand stays near the brick (showcase).
+        lift_height=0.08,
     )
+
+    # Get the generate candidates function.
+    generate = planner.generate_candidates
+
+    # Sub Function for generating candidates for a block.
+    def generate_candidates(
+        block_pos: object,
+        block_half_size: object = None,
+        block_quat: object = None,
+    ) -> list[object]:
+
+        # Generate with Duplo table clearance.
+        raw = generate(block_pos, block_half_size, block_quat)
+
+        # List for biased candidates.
+        biased: list[object] = []
+
+        # For each candidate.
+        for cand in raw:
+
+            # Sink top-down grasps when tips still clear the table after the bias.
+            if getattr(cand, "grasp_type", None) in (
+                GraspType.TOP_DOWN_X,
+                GraspType.TOP_DOWN_Y,
+            ):
+
+                # Get the grasp z.
+                grasp_z = float(np.asarray(cand.grasp_pos)[2])
+
+                # Calculate the maximum bias.
+                max_bias = grasp_z - FINGER_TIP_BELOW - (table_z + 0.001)
+
+                # Calculate the bias.
+                bias = min(DUPLO_GRASP_DEPTH_BIAS_M, max(0.0, max_bias))
+
+                # If the bias is greater than 0.0.
+                if bias > 0.0:
+
+                    # Calculate the delta.
+                    delta = np.array([0.0, 0.0, -bias])
+
+                    # Update the grasp position.
+                    cand.grasp_pos = np.asarray(cand.grasp_pos, dtype=np.float64) + delta
+
+                    # Update the approach position.
+                    cand.approach_pos = (
+                        np.asarray(cand.approach_pos, dtype=np.float64) + delta
+                    )
+
+                    # Update the lift position.
+                    cand.lift_pos = np.asarray(cand.lift_pos, dtype=np.float64) + delta
+
+            # Add the candidate to the biased list.
+            biased.append(cand)
+
+        # Return the biased candidates.
+        return biased
+
+    # Set the generate candidates function.
+    planner.generate_candidates = generate_candidates  
+
+    # Return the planner.
+    return planner
+
 
 # Create the ArmSceneBuilder with symbolic table + one free box per initial brick.
 def make_lego_builder(
@@ -109,21 +199,14 @@ def make_lego_builder(
     *,
     template_dir: Path | None = None,
 ) -> ArmSceneBuilder:
-
-    # Create the template directory if it is not provided.
-    if template_dir is None:
-        template_dir = Path(tempfile.mkdtemp(prefix="lego_bricks_"))
-    # Otherwise, use the provided template directory.
-    else:
-        template_dir = Path(template_dir)
-        template_dir.mkdir(parents=True, exist_ok=True)
+    _ = template_dir  # kept for call-site compatibility; bricks live under assets/
 
     # Create the ArmSceneBuilder.
     builder = ArmSceneBuilder()
     scene = cast(_TypedSceneBuilder, cast(object, builder))
 
-    # Add the symbolic table template.
-    scene.add_resource("table_symbolic", str(TABLE_SYMBOLIC_TEMPLATE))
+    # Add the WorkBenchMark table (covers Tier-3 pick/goal extents).
+    scene.add_resource("table_symbolic", str(_TABLE_TEMPLATE))
 
     # Same solver tuning as the blocks domain (stable contacts for stacking).
     # SceneBuilder has no public setters; setattr avoids private-attr access warnings.
@@ -159,12 +242,7 @@ def make_lego_builder(
     for brick in task.initial_blocks:
         # If the brick type is not registered.
         if brick.type not in registered:
-            # Calculate the half size.
-            half = nominal_half_size(brick.type)
-            # Create the path to the template file.
-            path = template_dir / f"{brick.type}.xml"
-            _ = path.write_text(brick_template_xml(half), encoding="utf-8")
-            scene.add_resource(brick.type, str(path.resolve()))
+            scene.add_resource(brick.type, str(brick_asset_path(brick.type)))
             registered.add(brick.type)
 
         # Calculate the half size.
@@ -190,7 +268,10 @@ def build_lego_env(
         _TypedSceneBuilder,
         cast(object, make_lego_builder(task, template_dir=template_dir)),
     )
-    return scene.build_env(rate=rate)
+
+    # Build the environment.
+    env = scene.build_env(rate=rate)
+    return env
 
 # Teleport each brick to its pick-area pose in the sim frame.
 def place_initial_blocks(

@@ -7,7 +7,7 @@ import pytest
 
 from workbenchmark_pddl.frames import TableFrame, euler_deg_to_quat_wxyz
 from workbenchmark_pddl.scene import (
-    brick_template_xml,
+    brick_asset_path,
     build_lego_env,
     make_lego_builder,
     nominal_half_size,
@@ -27,12 +27,10 @@ def test_nominal_half_size_4x2():
     assert hy == pytest.approx(0.016)
     assert hz == pytest.approx(0.0191 / 2)
 
-# Test the brick template has a freejoint and the correct size.
-# Should be 32mm x 16mm x 9.55mm and a freejoint.
-def test_brick_template_has_freejoint_and_size():
+# Test the brick asset has a freejoint and the correct size.
+def test_brick_asset_has_freejoint_and_size():
 
-    # Create the brick template.
-    xml = brick_template_xml((0.032, 0.016, 0.00955))
+    xml = brick_asset_path("brick_4x2").read_text(encoding="utf-8")
 
     # Assert the freejoint and size are correct.
     assert '_freejoint' in xml
@@ -51,6 +49,17 @@ def test_table_frame_maps_goal_bottom_brick():
     center = frame.center_from_yaml((0.0, 0.148, 0.0), half_z=0.00955)
     np.testing.assert_allclose(center, [0.0, 0.548, 0.27955])
 
+
+def test_table_frame_maps_pick_area_onto_surface():
+    frame = TableFrame()
+    # Dataset pick-area floor z=0.0495 → brick bottom on the MuJoCo table.
+    center = frame.center_from_yaml(
+        (0.3776, -0.114, 0.0495),
+        half_z=0.00955,
+        z_origin=0.0495,
+    )
+    np.testing.assert_allclose(center, [0.3776, 0.286, 0.27955])
+
 # Test the make_lego_builder registers the YAML names and creates the brick templates.
 # Should register the table and the bricks.
 def test_make_lego_builder_registers_yaml_names(tier1_task_001: Path, tmp_path: Path):
@@ -68,7 +77,7 @@ def test_make_lego_builder_registers_yaml_names(tier1_task_001: Path, tmp_path: 
     assert "simple_table" in names
     assert "4x2_brick_1" in names
     assert "4x2_brick_2" in names
-    assert (tmp_path / "brick_4x2.xml").is_file()
+    assert brick_asset_path("brick_4x2").is_file()
 
 # Test the build_lego_env and place_initial_blocks place the initial bricks at the correct positions.
 # Should place the bricks at the correct positions.
