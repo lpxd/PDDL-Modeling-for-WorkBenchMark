@@ -7,6 +7,7 @@ MuJoCo body names must match YAML brick names (e.g. ``4x2_brick_1``).
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from inspect import signature
 from typing import Protocol, cast
 
 import numpy as np
@@ -20,12 +21,18 @@ from workbenchmark_pddl.execution import (
     half_size_for,
     yaml_brick_name,
 )
-from workbenchmark_pddl.frames import TableFrame, euler_deg_to_quat_wxyz
+from workbenchmark_pddl.duplo_hold import get_duplo_hold
+from workbenchmark_pddl.frames import (
+    PICK_AREA_Z_ORIGIN,
+    TableFrame,
+    euler_deg_to_quat_wxyz,
+)
 from workbenchmark_pddl.pddl_names import GRIPPER_NAME
 from workbenchmark_pddl.planner import PlanResult
 from workbenchmark_pddl.problem import domain_path
 from workbenchmark_pddl.task import TaskSpec, Vec3
 from tampanda.environments.franka_env import FrankaEnvironment
+from tampanda.planners.grasp_planner import GraspType
 from tampanda.tamp import DomainBridge
 
 # Top-down place EE quat (TAMPanda TOP_DOWN_Y).
@@ -59,7 +66,7 @@ class PickPlaceLike(Protocol):
         ee_quat: FloatArray | None = None,
         target_block_name: str | None = None,
         approach_height: float = 0.15,
-        place_clearance: float = 0.003,
+        place_clearance: float = 0.0,
     ) -> bool: ...
 
 
@@ -119,6 +126,8 @@ def _executor_pose(
     rotation_deg: Vec3,
     half_size: Vec3,
     frame: TableFrame | None,
+    *,
+    z_origin: float = 0.0,
 ) -> tuple[FloatArray, FloatArray, FloatArray]:
 
     # Convert the half size to a numpy array.
@@ -138,7 +147,7 @@ def _executor_pose(
     z_half = cast(object, half.item(2))
     if not isinstance(z_half, (int, float)):
         raise TypeError("half-size z must be numeric")
-    center = frame.center_from_yaml(pos, float(z_half))
+    center = frame.center_from_yaml(pos, float(z_half), z_origin=z_origin)
 
     # Return the pose.
     return center, euler_deg_to_quat_wxyz(rotation_deg), half
@@ -155,20 +164,27 @@ def _place_with_brick_exceptions(
     ee_quat: FloatArray | None = None,
     target_block_name: str | None = None,
     approach_height: float = 0.15,
-    place_clearance: float = 0.003,
+    place_clearance: float = 0.0,
+    place_quat: FloatArray | None = None,
 ) -> bool:
+
+    # Create a dictionary of place kwargs.
+    place_kwargs: dict[str, object] = {
+        "ee_quat": ee_quat,
+        "target_block_name": target_block_name,
+        "approach_height": approach_height,
+        "place_clearance": place_clearance,
+    }
+
+    # Showcase executor accepts place_quat for an upright snap after release.
+    if place_quat is not None and "place_quat" in signature(executor.place).parameters:
+        place_kwargs["place_quat"] = place_quat
 
     # If the environment is None or does not have add_collision_exception, return the place.
     if env is None or not hasattr(env, "add_collision_exception"):
-        return executor.place(
-            block_name,
-            place_block_center,
-            ee_quat=ee_quat,
-            target_block_name=target_block_name,
-            approach_height=approach_height,
-            place_clearance=place_clearance,
-        )
+        return executor.place(block_name, place_block_center, **place_kwargs)
 
+    # Cast the environment to a collision environment.
     coll_env = cast(_CollisionEnv, env)
 
     # Get the collision exceptions.
@@ -185,14 +201,7 @@ def _place_with_brick_exceptions(
 
     # Try to place the block.
     try:
-        return executor.place(
-            block_name,
-            place_block_center,
-            ee_quat=ee_quat,
-            target_block_name=target_block_name,
-            approach_height=approach_height,
-            place_clearance=place_clearance,
-        )
+        return executor.place(block_name, place_block_center, **place_kwargs)
     finally:
         for name in added:
             coll_env.remove_collision_exception(name)
@@ -205,9 +214,16 @@ def execute_grounded_action(
     frame: TableFrame | None = None,
 ) -> bool:
 
+    # Get the z origin.
+    z_origin = PICK_AREA_Z_ORIGIN if action.kind == "pick" else 0.0
+
     # Convert the action to an executor pose.
     pos, quat, half = _executor_pose(
-        action.pos, action.rotation_deg, action.half_size, frame
+        action.pos,
+        action.rotation_deg,
+        action.half_size,
+        frame,
+        z_origin=z_origin,
     )
 
     # If the action is a pick, return the result of the pick.
@@ -252,6 +268,7 @@ def make_lego_bridge(
     executor: PickPlaceLike | None = None,
     frame: TableFrame | None = None,
 ) -> object:
+
     # Create a DomainBridge for the task.
     bridge = cast(
         _TypedDomainBridge,
@@ -271,6 +288,7 @@ def make_lego_bridge(
     # Get the brick names from the initial blocks.
     brick_names = [b.name for b in task.initial_blocks]
 
+    # Register the pick action.
     @bridge.action("pick")
     def exec_pick(
         env: object,
@@ -283,15 +301,28 @@ def make_lego_bridge(
         area: object,
         brick_type: object,
     ) -> tuple[bool, dict[object, bool]]:
-        _ = (env, fluents, stud, layer, rot, area, brick_type)
+
+
+        _ = (fluents, stud, layer, rot, area, brick_type)
 
         # Get the brick name from the PDDL object name.
         name = yaml_brick_name(str(brick))
 
+        # Break Duplo stud lock before lifting this brick.
+        hold = get_duplo_hold(env)
+        if hold is not None:
+            hold.release(name)
+
         # Get the brick specification from the task.
         spec = brick_for_pick(task, name)
         half = half_size_for(spec)
-        pos, quat, half_arr = _executor_pose(spec.pos, spec.rotation, half, frame)
+        pos, quat, half_arr = _executor_pose(
+            spec.pos,
+            spec.rotation,
+            half,
+            frame,
+            z_origin=PICK_AREA_Z_ORIGIN,
+        )
 
         # Prefer top-down grasps
         # FRONT last (place uses a fixed top-down EE quat).
@@ -304,9 +335,6 @@ def make_lego_bridge(
 
         # If the grasp planner is not None.
         if gp is not None:
-
-            # Import the GraspType from the grasp_planner module.
-            from tampanda.planners.grasp_planner import GraspType
 
             # Generate the candidates.
             generate = cast(
@@ -328,7 +356,10 @@ def make_lego_bridge(
             ]
             candidates = top + front
 
+        # Pick the block.
         ok = executor.pick(name, pos, half_arr, quat, candidates=candidates)
+
+        # If the pick failed, return False.
         if not ok:
             return False, {}
 
@@ -363,9 +394,11 @@ def make_lego_bridge(
         half = half_size_for(spec)
 
         # Calculate the executor pose.
-        pos, _quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
+        pos, quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
 
-        # Place the block while ignoring collisions with task bricks.
+        # Ignore all task bricks while moving the held one — Tier-3 towers are
+        # dense; pins still keep placed bricks from being shoved.
+        # place_clearance=0: showcase seats/pins flush (no intentional air-gap drop).
         ok = _place_with_brick_exceptions(
             executor,
             env,
@@ -375,11 +408,18 @@ def make_lego_bridge(
             ee_quat=_PLACE_EE_QUAT,
             target_block_name=None,
             approach_height=0.20,
+            place_clearance=0.0,
+            place_quat=quat,
         )
 
         # Return False if the place failed.
         if not ok:
             return False, {}
+
+        # Pin in world frame so later arm contact cannot shove the brick.
+        hold = get_duplo_hold(env)
+        if hold is not None:
+            hold.pin(name)
 
         # Return True if the place succeeded.
         return True, {
@@ -418,9 +458,9 @@ def make_lego_bridge(
         half = half_size_for(spec)
 
         # Calculate the executor pose.
-        pos, _quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
+        pos, quat, _half = _executor_pose(spec.pos, spec.rotation, half, frame)
 
-        # Place the block while ignoring collisions with task bricks.
+        # Ignore all task bricks while stacking (pins keep the tower solid).
         ok = _place_with_brick_exceptions(
             executor,
             env,
@@ -430,11 +470,19 @@ def make_lego_bridge(
             ee_quat=_PLACE_EE_QUAT,
             target_block_name=bottom_name,
             approach_height=0.20,
+            place_clearance=0.0,
+            place_quat=quat,
         )
 
         # If the stack fails, return False.
         if not ok:
             return False, {}
+
+        # World-pin both bricks (weld alone left the top free to fall on release).
+        hold = get_duplo_hold(env)
+        if hold is not None:
+            hold.pin(bottom_name)
+            hold.pin(top_name)
 
         # Return True if the stack succeeded.
         return True, {

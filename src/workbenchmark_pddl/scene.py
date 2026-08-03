@@ -15,6 +15,7 @@ from tampanda.planners.grasp_planner import (
 )
 from tampanda.scenes import ArmSceneBuilder
 
+from workbenchmark_pddl.duplo_hold import enable_duplo_hold
 from workbenchmark_pddl.frames import TableFrame, DEFAULT_SURFACE_Z
 from workbenchmark_pddl.geometry import BRICK_SIZE_STUDS
 from workbenchmark_pddl.grid import LAYER_HEIGHT_M, STUD_PITCH_M
@@ -271,6 +272,8 @@ def build_lego_env(
 
     # Build the environment.
     env = scene.build_env(rate=rate)
+    # Box proxies have no studs — kinematic pins keep stacked bricks locked.
+    _ = enable_duplo_hold(env)
     return env
 
 # Teleport each brick to its pick-area pose in the sim frame.
