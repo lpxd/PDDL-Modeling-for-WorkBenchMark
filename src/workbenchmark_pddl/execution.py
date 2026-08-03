@@ -219,3 +219,116 @@ def _find_brick(
 
     # If the brick is not found, raise an error.
     raise KeyError(f"brick {name!r} not found in {field}")
+
+# This function is used to convert the layer_* token to the layer index.
+def _layer_index(token: str) -> int:
+    if not token.startswith("layer_"):
+        raise ValueError(f"expected layer_* token, got {token!r}")
+    return int(token.split("_", 1)[1])
+
+# This function is used to reorder the plan so that the bottom-up order is followed.
+# PDDL planners often finish one column before other base bricks. That is
+# valid PDDL but forces the arm through finished towers. Prefer bottom-up
+# while preserving support dependencies (stack after its support is placed).
+def reorder_plan_bottom_up(plan: PlanResult) -> PlanResult:
+
+    # If the plan is not solved or has no actions, return the plan.
+    if not plan.solved or not plan.actions:
+        return plan
+
+    # Convert the plan actions to a list.
+    actions = list(plan.actions)
+
+    # If the number of actions is not even, return the plan.
+    if len(actions) % 2 != 0:
+        return plan
+
+    # Initialize a list to store the pick, place, brick, layer, and support.
+    units: list[tuple[PlanAction, PlanAction, str, int, str | None]] = []
+
+    # Iterate over the actions in pairs.
+    for i in range(0, len(actions), 2):
+
+        # Get the pick and place actions.
+        pick = actions[i]
+        put = actions[i + 1]
+
+        # If the pick action is not a pick action or the place action is not a place or stack action, return the plan.
+        if pick.name != "pick" or put.name not in ("place", "stack"):
+            return plan
+
+        # Get the brick name from the pick action.
+        brick = yaml_brick_name(pick.params[1])
+
+        # If the place action is a place action, get the layer index from the place action.
+        if put.name == "place":
+            layer = _layer_index(put.params[3])
+
+        # If the place action is a stack action, get the support brick name from the place action.
+            support = None
+            
+        else:
+            layer = _layer_index(put.params[5])
+            support = yaml_brick_name(put.params[2])
+
+        # Add the pick, place, brick, layer, and support to the list.
+        units.append((pick, put, brick, layer, support))
+
+    # Create a dictionary to store the index of the brick.
+    by_brick = {u[2]: i for i, u in enumerate(units)}
+
+    # Initialize a set to store the remaining bricks.
+    remaining = set(range(len(units)))
+
+    # Initialize a list to store the ordered bricks.
+    ordered: list[int] = []
+
+    # While there are remaining bricks, find the next brick to place.
+    while remaining:
+
+        # Find the next brick to place.
+        ready = [
+            i
+            for i in remaining
+            if units[i][4] is None or by_brick.get(units[i][4], -1) in ordered
+        ]
+
+        # If there are no ready bricks, return the plan.
+        if not ready:
+            return plan  # cyclic / malformed — keep original
+
+        # Sort the ready bricks by layer and index.
+        ready.sort(key=lambda i: (units[i][3], i))
+
+        # Choose the first ready brick.
+        chosen = ready[0]
+
+        # Add the chosen brick to the ordered list.
+        ordered.append(chosen)
+
+        # Remove the chosen brick from the remaining set.
+        remaining.remove(chosen)
+
+    # Initialize a list to store the new actions.
+    new_actions: list[PlanAction] = []
+
+    # Iterate over the ordered bricks.
+    for i in ordered:
+
+        # Get the pick and place actions.
+        pick, put, *_ = units[i]
+
+        # Add the pick and place actions to the new actions list.
+        new_actions.append(pick)
+        new_actions.append(put)
+
+    # If the new actions are the same as the original actions, return the plan.
+    if tuple(new_actions) == plan.actions:
+        return plan
+
+    # Return the new plan.
+    return PlanResult(
+        solved=plan.solved,
+        status=plan.status,
+        actions=tuple(new_actions),
+    )

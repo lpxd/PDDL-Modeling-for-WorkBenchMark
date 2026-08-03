@@ -11,10 +11,11 @@ from workbenchmark_pddl.execution import (
     ground_plan,
     ground_plan_action,
     half_size_for,
+    reorder_plan_bottom_up,
     yaml_brick_name,
 )
 from workbenchmark_pddl.planner import PlanAction, PlanResult, plan_task
-from workbenchmark_pddl.task import load_task
+from workbenchmark_pddl.task import BrickSpec, load_task
 
 # Test the yaml_brick_name function.
 # Should strip the "b_" prefix from the PDDL object name.
@@ -51,7 +52,6 @@ def test_pose_lookup_pick_vs_place(tier1_task_001: Path):
 # Test the half_size_for function.
 # Should return the half-size of the brick in meters.
 def test_half_size_4x2():
-    from workbenchmark_pddl.task import BrickSpec
 
     # Create a brick.
     brick = BrickSpec(
@@ -177,3 +177,42 @@ def test_ground_unsolved_plan_raises(tier1_task_001: Path):
     # Assert the ground_plan function raises an error if the plan is not solved.
     with pytest.raises(ValueError, match="unsolved"):
         ground_plan(task, failed)
+
+
+def test_reorder_plan_bottom_up_layers_and_supports():
+    # Column finished early, then another base — should pull bases forward.
+    plan = PlanResult(
+        solved=True,
+        status="SOLVED",
+        actions=(
+            PlanAction("pick", ("gripper", "b_a", "s", "layer_0", "rot_0", "pick_area", "t")),
+            PlanAction("place", ("gripper", "b_a", "s", "layer_0", "rot_0", "assembly_area", "t")),
+            PlanAction("pick", ("gripper", "b_b", "s", "layer_0", "rot_0", "pick_area", "t")),
+            PlanAction(
+                "stack",
+                (
+                    "gripper",
+                    "b_b",
+                    "b_a",
+                    "s1",
+                    "s0",
+                    "layer_1",
+                    "layer_0",
+                    "rot_0",
+                    "rot_0",
+                    "assembly_area",
+                    "t",
+                    "t",
+                ),
+            ),
+            PlanAction("pick", ("gripper", "b_c", "s", "layer_0", "rot_0", "pick_area", "t")),
+            PlanAction("place", ("gripper", "b_c", "s", "layer_0", "rot_0", "assembly_area", "t")),
+        ),
+    )
+    reordered = reorder_plan_bottom_up(plan)
+    put_bricks = [
+        yaml_brick_name(a.params[1])
+        for a in reordered.actions
+        if a.name in ("place", "stack")
+    ]
+    assert put_bricks == ["a", "c", "b"]
