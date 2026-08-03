@@ -1,0 +1,9 @@
+<body pos="0 0 0">
+  <joint name="_freejoint" type="free"/>
+  <!-- half = (4*stud_pitch/2, 2*stud_pitch/2, layer/2) = (0.032, 0.016, 0.00955) -->
+  <inertial mass="0.0312934" pos="0 0 0"
+           diaginertia="3.62172e-06 1.16328e-05 1.33519e-05"/>
+  <geom name="_geom" type="box" size="0.032 0.016 0.00955"
+        rgba="0.8 0.2 0.2 1" friction="2.0 0.2 0.01"
+        solimp="0.99 0.99 0.01" solref="0.02 1"/>
+</body>

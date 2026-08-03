@@ -1,0 +1,17 @@
+<body pos="0 0 0">
+  <joint name="_freejoint" type="free"/>
+  <!-- 2.0m x 1.0m tabletop (half 1.0 x 0.5), 4cm thick; top at z=0.27.
+       Larger than TAMPanda table_symbolic so Tier-3 pick/goal poses stay on-top. -->
+  <geom name="_surface" type="box" size="1.0 0.5 0.02" pos="-0.25 -0.15 0.25"
+        rgba="0.55 0.55 0.55 1" contype="1" conaffinity="1"/>
+  <!-- legs at surface corners -->
+  <geom type="box" size="0.015 0.015 0.12" pos=" 0.72  0.32 0.12" rgba="0.3 0.3 0.3 1"/>
+  <geom type="box" size="0.015 0.015 0.12" pos="-1.22  0.32 0.12" rgba="0.3 0.3 0.3 1"/>
+  <geom type="box" size="0.015 0.015 0.12" pos=" 0.72 -0.62 0.12" rgba="0.3 0.3 0.3 1"/>
+  <geom type="box" size="0.015 0.015 0.12" pos="-1.22 -0.62 0.12" rgba="0.3 0.3 0.3 1"/>
+  <!-- picking sites -->
+  <site name="_site_right" pos="-0.20 0 0.25" size="0.005"
+        rgba="1 0 0 1" type="sphere" euler="-1.57 1.57 0"/>
+  <site name="_site_left"  pos=" 0.20 0 0.25" size="0.005"
+        rgba="0 1 0 1" type="sphere" euler="-1.57 -1.57 0"/>
+</body>

@@ -30,7 +30,7 @@ where = ["src"]
 include = ["workbenchmark_pddl*"]
 
 [tool.setuptools.package-data]
-workbenchmark_pddl = ["pddl/*.pddl"]
+workbenchmark_pddl = ["pddl/*.pddl", "assets/*.xml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
