@@ -6,7 +6,7 @@
   "plan_length": 4,
   "actions_ok": 4,
   "failed_action": "",
-  "execution_time_s": 24.2488,
+  "execution_time_s": 22.8493,
   "path": "/Users/mo/Documents/GitHub/dataset/ground_truth/tier1/task_004.yaml",
   "plan_path": "/Users/mo/Documents/GitHub/PDDL-Modeling-for-WorkBenchMark/results/tier1/task_004/plan.json"
 }
