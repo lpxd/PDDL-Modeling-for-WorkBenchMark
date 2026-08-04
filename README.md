@@ -27,12 +27,14 @@ multi-column) assembly tasks
 - Classical planning via Unified Planning (UPF)
 - MuJoCo simulation via TAMPanda (`DomainBridge` → `PickPlaceExecutor`)
 - Batch planning and execution evaluation (tiers 1–3, N = 20) with metrics
-  under `results/`
+under `results/`
 - Interactive MuJoCo viewer to replay a single task (`scripts/show_execution.py`)
 
 > **Note:** `stud` / `layer` / `rot` are for planning only.
 > Execution does not invert the grid (lossy). Pose sources:
 > `pick` → `initial_blocks`, `place`/`stack` → goal `blocks`.
+
+
 
 ## 🚫 Not Part of the Project
 
@@ -41,12 +43,21 @@ multi-column) assembly tasks
 - Perception stack (GroundingDINO, SAM, FoundationPose, …)
 - Modifying TAMPanda itself
 
-## 📊 Evaluation Metrics
+
+
+## 📊 Evaluation
+
+See **[EVALUATION.md](EVALUATION.md)** for metrics definitions and the full
+tiers 1–3 (N = 20) planning / execution results.
+
+Quick reference:
 
 - ✅ **Planning success** — planner finds a valid plan
 - 🤖 **Execution success** — all actions succeed in TAMPanda
-- ⏱️ **Planning time & plan length** — vs. ABD baseline where available
+- ⏱️ **Planning time & plan length**
 - 🔍 **Failure analysis** — which task structures expose model gaps
+
+
 
 ## 📦 Dataset
 
@@ -67,6 +78,8 @@ parent/
 ├── dataset/                           # WorkBenchMark tasks
 └── PDDL-Modeling-for-WorkBenchMark/   # this repo (on the course machine: Project/)
 ```
+
+
 
 ### From scratch
 
@@ -141,6 +154,8 @@ results/
     └── ...
 ```
 
+
+
 ## 🧠 Evaluation (planning)
 
 Batch planning only (no simulation). Default: Tier 1–3, N = 20.
@@ -161,6 +176,8 @@ To (re)evaluate a specific task:
 python scripts/eval_planning.py --task 3/20
 python scripts/eval_planning.py --task tier3/task_020
 ```
+
+
 
 ## 🤖 Evaluation (execution)
 
@@ -189,6 +206,8 @@ python scripts/eval_execution.py --task tier2/task_005
 ```
 
 > **Note:** Use **tmux** for long runs (`tmux new -s exec`, detach with Ctrl+b d, reattach with `tmux attach -t exec`).
+
+
 
 ## 👀 Show execution (viewer)
 
