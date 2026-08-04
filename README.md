@@ -17,74 +17,29 @@ and `PickPlaceExecutor`.
 
 Pipeline: **YAML task spec → PDDL problem → planner → action plan → MuJoCo execution**
 
-## 🎯 Scope
+## 🎯 Deliverables
 
-What we must deliver, what we aim for if time allows, and what we explicitly leave out.
+- Tier 1 (2-brick), Tier 2 (3–5 brick), and Tier 3 (3D layouts, half-overlap,
+multi-column) assembly tasks
+- Stud-grid PDDL domain (`pick` / `place` / `stack`) with rotation and
+`can-attach` / footprint geometry
+- Ground-truth poses from WorkBenchMark YAML (no perception)
+- Classical planning via Unified Planning (UPF)
+- MuJoCo simulation via TAMPanda (`DomainBridge` → `PickPlaceExecutor`)
+- Batch planning and execution evaluation (tiers 1–3, N = 20) with metrics
+  under `results/`
+- Interactive MuJoCo viewer to replay a single task (`scripts/show_execution.py`)
 
-### ✅ Minimal Requirements
+> **Note:** `stud` / `layer` / `rot` are for planning only.
+> Execution does not invert the grid (lossy). Pose sources:
+> `pick` → `initial_blocks`, `place`/`stack` → goal `blocks`.
 
-- Tier 1 (2-brick) and Tier 2 (3–5 brick) vertical stacks
-- Ground-truth poses from YAML (no perception)
-- MuJoCo simulation via TAMPanda
-
-
-
-### 🚀 Goal
-
-- PDDL domain designed for Tier 3 up front (stud-grid poses, rotation,
-`can-attach` / footprint geometry) — no rewrite later
-- Tier 3 (3D layouts, half-overlap, multi-column) if time allows
-- Compare planning time and plan quality against the ABD baseline
-
-
-
-### 🚫 Not Part of the Project
+## 🚫 Not Part of the Project
 
 - Tier 4 complex interlocking assemblies
 - Real-robot experiments
 - Perception stack (GroundingDINO, SAM, FoundationPose, …)
 - Modifying TAMPanda itself
-
-
-
-## 🗺️ Phases
-
-
-| Phase                  | Goal                                                                        | Status         |
-| ---------------------- | --------------------------------------------------------------------------- | -------------- |
-| **1 — Setup**          | Repo, `pyproject.toml`, package skeleton, env smoke tests                   | ✅ done         |
-| **2 — Symbolic layer** | `lego_domain.pddl`, YAML parser, problem generator, planner                 | ✅ done         |
-| **3 — Execution**      | `DomainBridge` wiring, predicate grounding, motion executors                | ✅ done         |
-| **4 — Evaluation**     | Batch runner, metrics vs. ABD, failure analysis (Tier 1–2; Tier 3 optional) | 🚧 in progress |
-
-
-**Phase 2 deliverables:** 
-
-- stud-grid PDDL domain with `pick` / `place` / `stack`
-- Tier‑3-ready predicates YAML parser for WorkBenchMark `blocks[]` specs
-- problem generator from initial + goal YAML
-- classical planner (UPF) producing assembly plans
-
-**Phase 3 deliverables:** 
-
-- map PDDL actions to `PickPlaceExecutor` calls in TAMPanda
-- resolve each action’s brick to a continuous pose via YAML lookup
-- MuJoCo scene with Duplo box proxies (`scene.py`) + table-frame map (`frames.py`)
-
-> **Note:** `stud` / `layer` / `rot` are for planning only.
-> Execution does not invert the grid, because reverting is lossy.
-> Instead they use the ground-truth YAML poses provided by WorkBenchMark.
-> `pick` uses `initial_blocks` as the pose source,
-> `place`/`stack` use goal `blocks` as the pose source.
-
-**Phase 4 deliverables:** 
-
-- systematic evaluation on Tier 1–2 (N = 20 tasks per tier)
-- planning/execution success, time, plan length vs. ABD
-- Tier 3 evaluation if implementation of it is completed.
-- Failure analysis.
-
-
 
 ## 📊 Evaluation Metrics
 
@@ -92,8 +47,6 @@ What we must deliver, what we aim for if time allows, and what we explicitly lea
 - 🤖 **Execution success** — all actions succeed in TAMPanda
 - ⏱️ **Planning time & plan length** — vs. ABD baseline where available
 - 🔍 **Failure analysis** — which task structures expose model gaps
-
-
 
 ## 📦 Dataset
 
@@ -139,7 +92,7 @@ python -m pip install quadprog
 
 # 5) Smoke-check the toolchain
 python scripts/check_env.py
-pytest -v              
+pytest -v
 ```
 
 > **Note:** `pytest` may take several minutes: the suite includes full MuJoCo e2e smokes
@@ -157,7 +110,7 @@ Both the planning and execution results are stored in the `results` directory.
 
 They can be recreated at any time by following the instructions below.
 
-> **Note:**  Planninig and execution are very time-consuming, 
+> **Note:** Planning and execution are very time-consuming,
 > so a full set of results is already available in the `results` directory.
 
 The result directory layout is as follows:
@@ -188,11 +141,9 @@ results/
     └── ...
 ```
 
-
-
 ## 🧠 Evaluation (planning)
 
-Batch planning only (no Simulation). Default: Tier 1–3, N = 20.
+Batch planning only (no simulation). Default: Tier 1–3, N = 20.
 
 > **Note:** Each solved task generates a `plan.json` and `planning_metrics.json` file.
 > It also creates a summary file `planning_summary.jsonl` and `planning_summary.csv`.
@@ -204,14 +155,12 @@ To evaluate all tasks:
 python scripts/eval_planning.py # optional: --tiers 1,2,3 --n 20 --out-dir results
 ```
 
-To (re)evaluate a specifc task:
+To (re)evaluate a specific task:
 
 ```bash
 python scripts/eval_planning.py --task 3/20
 python scripts/eval_planning.py --task tier3/task_020
 ```
-
-
 
 ## 🤖 Evaluation (execution)
 
@@ -241,3 +190,20 @@ python scripts/eval_execution.py --task tier2/task_005
 
 > **Note:** Use **tmux** for long runs (`tmux new -s exec`, detach with Ctrl+b d, reattach with `tmux attach -t exec`).
 
+## 👀 Show execution (viewer)
+
+Replay a single task in MuJoCo with the interactive viewer.
+Does **not** write or overwrite any metrics / summaries.
+
+Uses `results/tierN/task_XXX/plan.json` when present — otherwise plans before execution.
+
+```bash
+python scripts/show_execution.py --task 1/1
+python scripts/show_execution.py --task tier2/task_005
+
+# macOS: must use mjpython (not plain python) for the MuJoCo viewer
+mjpython scripts/show_execution.py --task 1/1
+mjpython scripts/show_execution.py --task tier2/task_005
+```
+
+Close the viewer window when done.
