@@ -1,0 +1,59 @@
+{
+  "solved": true,
+  "status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "actions": [
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_1",
+        "stud_16_m7",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_4x2_brick_1",
+        "stud_0_9",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "stud_24_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_4x2_brick_2",
+        "b_4x2_brick_1",
+        "stud_0_9",
+        "stud_0_9",
+        "layer_1",
+        "layer_0",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_4x2",
+        "type_4x2"
+      ]
+    }
+  ]
+}

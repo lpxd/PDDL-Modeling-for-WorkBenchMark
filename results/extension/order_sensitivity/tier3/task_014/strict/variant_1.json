@@ -1,0 +1,56 @@
+{
+  "harness": "strict",
+  "harness_version": 3,
+  "tier": 3,
+  "task_id": 14,
+  "seed": 0,
+  "plan_length": 12,
+  "success": true,
+  "status": "OK",
+  "actions_ok": 12,
+  "failed_index": null,
+  "failed_action": "",
+  "failed_brick": "",
+  "failed_support": "",
+  "failure_reason": "",
+  "execution_time_s": 92.73,
+  "pose_errors": {
+    "4x2_brick_2": {
+      "xy_mm": 0.318,
+      "z_mm": -0.697,
+      "yaw_deg": 0.003,
+      "tilt_deg": 0.141
+    },
+    "4x2_brick_1": {
+      "xy_mm": 2.167,
+      "z_mm": 0.741,
+      "yaw_deg": 0.3,
+      "tilt_deg": 0.377
+    },
+    "2x2_brick_6": {
+      "xy_mm": 0.313,
+      "z_mm": -0.746,
+      "yaw_deg": 0.005,
+      "tilt_deg": 0.029
+    },
+    "2x2_brick_4": {
+      "xy_mm": 0.289,
+      "z_mm": -0.777,
+      "yaw_deg": 0.002,
+      "tilt_deg": 0.044
+    },
+    "2x2_brick_3": {
+      "xy_mm": 1.984,
+      "z_mm": -0.055,
+      "yaw_deg": 0.565,
+      "tilt_deg": 0.113
+    },
+    "4x2_brick_5": {
+      "xy_mm": 0.529,
+      "z_mm": -0.754,
+      "yaw_deg": 0.015,
+      "tilt_deg": 0.094
+    }
+  },
+  "detail": ""
+}

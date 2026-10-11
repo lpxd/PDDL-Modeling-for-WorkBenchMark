@@ -1,0 +1,15 @@
+{
+  "planner": "pyperplan-opt",
+  "engine": "pyperplan-opt",
+  "tier": 3,
+  "task_id": 20,
+  "status": "timeout",
+  "upf_status": "",
+  "plan_length": 0,
+  "planning_time_s": null,
+  "wall_s": 600.36,
+  "timeout_s": 600.0,
+  "plan_valid": null,
+  "yaml": "tier3/task_020.yaml",
+  "detail": ""
+}

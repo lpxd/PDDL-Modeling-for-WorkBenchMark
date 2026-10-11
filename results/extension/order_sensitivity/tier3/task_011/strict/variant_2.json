@@ -1,0 +1,38 @@
+{
+  "harness": "strict",
+  "harness_version": 3,
+  "tier": 3,
+  "task_id": 11,
+  "seed": 0,
+  "plan_length": 10,
+  "success": false,
+  "status": "FAIL",
+  "actions_ok": 7,
+  "failed_index": 7,
+  "failed_action": "place",
+  "failed_brick": "b_4x2_brick_2",
+  "failed_support": "",
+  "failure_reason": "blocked_from_above",
+  "execution_time_s": 42.11,
+  "pose_errors": {
+    "4x2_brick_1": {
+      "xy_mm": 0.482,
+      "z_mm": -0.704,
+      "yaw_deg": 0.008,
+      "tilt_deg": 0.109
+    },
+    "4x2_brick_3": {
+      "xy_mm": 0.344,
+      "z_mm": -0.787,
+      "yaw_deg": 0.001,
+      "tilt_deg": 0.154
+    },
+    "2x2_brick_4": {
+      "xy_mm": 0.399,
+      "z_mm": -0.736,
+      "yaw_deg": 0.007,
+      "tilt_deg": 0.042
+    }
+  },
+  "detail": ""
+}

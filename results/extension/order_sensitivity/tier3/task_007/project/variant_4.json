@@ -1,0 +1,15 @@
+{
+  "tier": 3,
+  "task_id": 7,
+  "seed": 0,
+  "plan_length": 12,
+  "success": true,
+  "status": "OK",
+  "actions_ok": 12,
+  "failed_index": null,
+  "failed_action": "",
+  "failed_brick": "",
+  "failed_support": "",
+  "execution_time_s": 76.9756,
+  "detail": ""
+}

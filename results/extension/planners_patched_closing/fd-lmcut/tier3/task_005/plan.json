@@ -1,0 +1,223 @@
+{
+  "solved": true,
+  "status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "actions": [
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_3",
+        "stud_17_m7",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_2x2_brick_3",
+        "stud_4_10",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_1",
+        "stud_32_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_4x2_brick_1",
+        "stud_2_10",
+        "layer_0",
+        "rot_90",
+        "assembly_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_2",
+        "stud_38_m8",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "place",
+      "params": [
+        "gripper",
+        "b_2x2_brick_2",
+        "stud_0_9",
+        "layer_0",
+        "rot_0",
+        "assembly_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_4",
+        "stud_23_m7",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_4x2_brick_4",
+        "b_2x2_brick_2",
+        "stud_2_10",
+        "stud_0_9",
+        "layer_1",
+        "layer_0",
+        "rot_0",
+        "rot_0",
+        "assembly_area",
+        "type_4x2",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_8",
+        "stud_17_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_8",
+        "b_4x2_brick_4",
+        "stud_4_10",
+        "stud_2_10",
+        "layer_2",
+        "layer_1",
+        "rot_0",
+        "rot_0",
+        "assembly_area",
+        "type_2x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_4x2_brick_5",
+        "stud_23_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_4x2_brick_5",
+        "b_4x2_brick_4",
+        "stud_2_10",
+        "stud_2_10",
+        "layer_2",
+        "layer_1",
+        "rot_90",
+        "rot_0",
+        "assembly_area",
+        "type_4x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_6",
+        "stud_31_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_6",
+        "b_4x2_brick_5",
+        "stud_2_10",
+        "stud_2_10",
+        "layer_3",
+        "layer_2",
+        "rot_90",
+        "rot_90",
+        "assembly_area",
+        "type_2x2",
+        "type_4x2"
+      ]
+    },
+    {
+      "name": "pick",
+      "params": [
+        "gripper",
+        "b_2x2_brick_7",
+        "stud_39_m13",
+        "layer_0",
+        "rot_0",
+        "pick_area",
+        "type_2x2"
+      ]
+    },
+    {
+      "name": "stack",
+      "params": [
+        "gripper",
+        "b_2x2_brick_7",
+        "b_4x2_brick_4",
+        "stud_0_10",
+        "stud_2_10",
+        "layer_2",
+        "layer_1",
+        "rot_90",
+        "rot_0",
+        "assembly_area",
+        "type_2x2",
+        "type_4x2"
+      ]
+    }
+  ]
+}

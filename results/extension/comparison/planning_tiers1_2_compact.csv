@@ -1,0 +1,9 @@
+tier,engine,solved,median_planning_time_s,identical_plan_across_engines
+1,pyperplan,20/20,0.75,True
+1,pyperplan-opt,20/20,0.75,True
+1,fd-lama,20/20,1.34,True
+1,fd-lmcut,20/20,1.27,True
+2,pyperplan,20/20,1.37,True
+2,pyperplan-opt,20/20,1.29,True
+2,fd-lama,20/20,1.79,True
+2,fd-lmcut,20/20,1.82,True

@@ -1,0 +1,629 @@
+{
+  "task": 9,
+  "base_planner": "fd-lama",
+  "original_order": [
+    "4x2_brick_1",
+    "4x2_brick_3",
+    "4x2_brick_4",
+    "2x2_brick_5",
+    "4x2_brick_2"
+  ],
+  "counts": {
+    "bricks": 5,
+    "pddl_valid": 5,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "variants": [
+    {
+      "id": 0,
+      "order": [
+        "4x2_brick_1",
+        "4x2_brick_2",
+        "4x2_brick_3",
+        "4x2_brick_4",
+        "2x2_brick_5"
+      ],
+      "rule_feasible": true,
+      "first_blocked_position": null,
+      "blockers": [],
+      "pddl_valid": true,
+      "actions": [
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_23_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_2_7",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_38_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_3_5",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "stud_17_m13",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "b_4x2_brick_1",
+            "stud_2_6",
+            "stud_2_7",
+            "layer_1",
+            "layer_0",
+            "rot_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "stud_31_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "b_4x2_brick_3",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_2",
+            "layer_1",
+            "rot_90",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "stud_17_m7",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_2x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "b_4x2_brick_4",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_3",
+            "layer_2",
+            "rot_90",
+            "rot_90",
+            "assembly_area",
+            "type_2x2",
+            "type_4x2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "order": [
+        "4x2_brick_2",
+        "4x2_brick_1",
+        "4x2_brick_3",
+        "4x2_brick_4",
+        "2x2_brick_5"
+      ],
+      "rule_feasible": true,
+      "first_blocked_position": null,
+      "blockers": [],
+      "pddl_valid": true,
+      "actions": [
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_38_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_3_5",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_23_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_2_7",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "stud_17_m13",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "b_4x2_brick_1",
+            "stud_2_6",
+            "stud_2_7",
+            "layer_1",
+            "layer_0",
+            "rot_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "stud_31_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "b_4x2_brick_3",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_2",
+            "layer_1",
+            "rot_90",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "stud_17_m7",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_2x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "b_4x2_brick_4",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_3",
+            "layer_2",
+            "rot_90",
+            "rot_90",
+            "assembly_area",
+            "type_2x2",
+            "type_4x2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "order": [
+        "4x2_brick_1",
+        "4x2_brick_3",
+        "4x2_brick_4",
+        "4x2_brick_2",
+        "2x2_brick_5"
+      ],
+      "rule_feasible": false,
+      "first_blocked_position": 3,
+      "blockers": [
+        "4x2_brick_3",
+        "4x2_brick_4"
+      ],
+      "pddl_valid": true,
+      "actions": [
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_23_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_2_7",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "stud_17_m13",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "b_4x2_brick_1",
+            "stud_2_6",
+            "stud_2_7",
+            "layer_1",
+            "layer_0",
+            "rot_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "stud_31_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "b_4x2_brick_3",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_2",
+            "layer_1",
+            "rot_90",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_38_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_3_5",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "stud_17_m7",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_2x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "b_4x2_brick_4",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_3",
+            "layer_2",
+            "rot_90",
+            "rot_90",
+            "assembly_area",
+            "type_2x2",
+            "type_4x2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "order": [
+        "4x2_brick_1",
+        "4x2_brick_3",
+        "4x2_brick_2",
+        "4x2_brick_4",
+        "2x2_brick_5"
+      ],
+      "rule_feasible": false,
+      "first_blocked_position": 2,
+      "blockers": [
+        "4x2_brick_3"
+      ],
+      "pddl_valid": true,
+      "actions": [
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_23_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_1",
+            "stud_2_7",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "stud_17_m13",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_3",
+            "b_4x2_brick_1",
+            "stud_2_6",
+            "stud_2_7",
+            "layer_1",
+            "layer_0",
+            "rot_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_38_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "place",
+          "params": [
+            "gripper",
+            "b_4x2_brick_2",
+            "stud_3_5",
+            "layer_0",
+            "rot_0",
+            "assembly_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "stud_31_m8",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_4x2_brick_4",
+            "b_4x2_brick_3",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_2",
+            "layer_1",
+            "rot_90",
+            "rot_0",
+            "assembly_area",
+            "type_4x2",
+            "type_4x2"
+          ]
+        },
+        {
+          "name": "pick",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "stud_17_m7",
+            "layer_0",
+            "rot_0",
+            "pick_area",
+            "type_2x2"
+          ]
+        },
+        {
+          "name": "stack",
+          "params": [
+            "gripper",
+            "b_2x2_brick_5",
+            "b_4x2_brick_4",
+            "stud_2_6",
+            "stud_2_6",
+            "layer_3",
+            "layer_2",
+            "rot_90",
+            "rot_90",
+            "assembly_area",
+            "type_2x2",
+            "type_4x2"
+          ]
+        }
+      ]
+    }
+  ]
+}

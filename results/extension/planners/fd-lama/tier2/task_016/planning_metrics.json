@@ -1,0 +1,15 @@
+{
+  "planner": "fd-lama",
+  "engine": "fast-downward",
+  "tier": 2,
+  "task_id": 16,
+  "status": "solved",
+  "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "plan_length": 6,
+  "planning_time_s": 1.8389,
+  "wall_s": 4.97,
+  "timeout_s": 600.0,
+  "plan_valid": true,
+  "yaml": "tier2/task_016.yaml",
+  "detail": ""
+}

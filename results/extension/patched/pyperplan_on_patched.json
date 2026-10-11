@@ -1,0 +1,98 @@
+{
+  "quantified/pyperplan/tier1/task_001": {
+    "outcome": "error",
+    "exception": "UPUnsupportedProblemTypeError",
+    "message": "In precondition: Forall (brick c) (not (covers(c, b) and in-area(c, a))) of action: action place(endeffector g, brick b, stud s, layer l, rot r, area a, brick-type t) { preconditions = [ (holding(g, b) and area-assembly(a) and base-layer(l) and is-type(b, t) and free(s, l) and Forall (brick c) (not (covers(c, b) and in-area(c, a)))) ] effects = [ gripper-empty(g) := true at-stud(b, s) := true at-l",
+    "seconds": 3.4
+  },
+  "quantified/pyperplan-opt/tier1/task_001": {
+    "outcome": "error",
+    "exception": "UPUnsupportedProblemTypeError",
+    "message": "In precondition: Forall (brick c) (not (covers(c, b) and in-area(c, a))) of action: action place(endeffector g, brick b, stud s, layer l, rot r, area a, brick-type t) { preconditions = [ (holding(g, b) and area-assembly(a) and base-layer(l) and is-type(b, t) and free(s, l) and Forall (brick c) (not (covers(c, b) and in-area(c, a)))) ] effects = [ gripper-empty(g) := true at-stud(b, s) := true at-l",
+    "seconds": 0.5
+  },
+  "closing/pyperplan/tier1/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 4,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 2.3
+  },
+  "closing/pyperplan-opt/tier1/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 4,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 2.3
+  },
+  "prereq/pyperplan/tier1/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 4,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 2.1
+  },
+  "prereq/pyperplan-opt/tier1/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 4,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 1.8
+  },
+  "quantified/pyperplan/tier3/task_001": {
+    "outcome": "error",
+    "exception": "UPUnsupportedProblemTypeError",
+    "message": "In precondition: Forall (brick c) (not (covers(c, b) and in-area(c, a))) of action: action place(endeffector g, brick b, stud s, layer l, rot r, area a, brick-type t) { preconditions = [ (holding(g, b) and area-assembly(a) and base-layer(l) and is-type(b, t) and free(s, l) and Forall (brick c) (not (covers(c, b) and in-area(c, a)))) ] effects = [ gripper-empty(g) := true at-stud(b, s) := true at-l",
+    "seconds": 1.0
+  },
+  "quantified/pyperplan-opt/tier3/task_001": {
+    "outcome": "error",
+    "exception": "UPUnsupportedProblemTypeError",
+    "message": "In precondition: Forall (brick c) (not (covers(c, b) and in-area(c, a))) of action: action place(endeffector g, brick b, stud s, layer l, rot r, area a, brick-type t) { preconditions = [ (holding(g, b) and area-assembly(a) and base-layer(l) and is-type(b, t) and free(s, l) and Forall (brick c) (not (covers(c, b) and in-area(c, a)))) ] effects = [ gripper-empty(g) := true at-stud(b, s) := true at-l",
+    "seconds": 0.9
+  },
+  "closing/pyperplan/tier3/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 10,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 43.7
+  },
+  "closing/pyperplan-opt/tier3/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 10,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 42.9
+  },
+  "prereq/pyperplan/tier3/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 10,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 52.6
+  },
+  "prereq/pyperplan-opt/tier3/task_001": {
+    "outcome": "solved",
+    "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+    "plan_length": 10,
+    "plan_valid_original_domain": true,
+    "plan_valid_patched_domain": true,
+    "rule_feasible": true,
+    "seconds": 51.7
+  }
+}

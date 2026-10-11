@@ -1,0 +1,16 @@
+tier,domain,engine,attempted,solved,timeouts,time_median,time_mean,time_max,mean_plan_length,valid_original_domain,rule_feasible
+3,original,fd-lama,20,20,0,8.2,13.7,78.8,12,20,3
+3,quantified,fd-lama,20,20,0,8.4,15.8,105.4,12,20,20
+3,closing,fd-lama,20,19,1,29.8,76.7,288.9,11.47,19,19
+3,original,fd-lmcut,20,20,0,7.6,24.3,284.0,12,20,2
+3,closing,fd-lmcut,20,19,1,23.5,72.7,269.5,11.47,19,19
+2,original,fd-lama,20,20,0,1.8,1.8,3.4,5.8,20,20
+2,quantified,fd-lama,20,20,0,1.8,1.9,3.6,5.8,20,20
+2,closing,fd-lama,20,20,0,2.8,3.1,8.2,5.8,20,20
+2,original,fd-lmcut,20,20,0,1.8,1.9,3.3,5.8,20,20
+2,closing,fd-lmcut,20,20,0,2.8,3.1,7.9,5.8,20,20
+1,original,fd-lama,20,20,0,1.3,1.3,1.6,4,20,20
+1,quantified,fd-lama,20,20,0,1.3,1.2,1.5,4,20,20
+1,closing,fd-lama,20,20,0,1.5,1.4,1.7,4,20,20
+1,original,fd-lmcut,20,20,0,1.3,1.2,1.5,4,20,20
+1,closing,fd-lmcut,20,20,0,1.5,1.4,1.7,4,20,20

@@ -1,0 +1,142 @@
+{
+  "1": {
+    "bricks": 5,
+    "pddl_valid": 10,
+    "rule_feasible": 7,
+    "original_order_rule_feasible": true,
+    "base_planner": "fd-lama"
+  },
+  "2": {
+    "bricks": 5,
+    "pddl_valid": 10,
+    "rule_feasible": 4,
+    "original_order_rule_feasible": true,
+    "base_planner": "fd-lama"
+  },
+  "3": {
+    "bricks": 7,
+    "pddl_valid": 210,
+    "rule_feasible": 75,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "4": {
+    "bricks": 4,
+    "pddl_valid": 4,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": true,
+    "base_planner": "fd-lama"
+  },
+  "5": {
+    "bricks": 8,
+    "pddl_valid": 672,
+    "rule_feasible": 72,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "6": {
+    "bricks": 7,
+    "pddl_valid": 105,
+    "rule_feasible": 18,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "7": {
+    "bricks": 6,
+    "pddl_valid": 18,
+    "rule_feasible": 6,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "8": {
+    "bricks": 6,
+    "pddl_valid": 40,
+    "rule_feasible": 20,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "9": {
+    "bricks": 5,
+    "pddl_valid": 5,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "10": {
+    "bricks": 4,
+    "pddl_valid": 6,
+    "rule_feasible": 5,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "11": {
+    "bricks": 5,
+    "pddl_valid": 5,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "12": {
+    "bricks": 7,
+    "pddl_valid": 315,
+    "rule_feasible": 77,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "13": {
+    "bricks": 4,
+    "pddl_valid": 4,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "14": {
+    "bricks": 6,
+    "pddl_valid": 45,
+    "rule_feasible": 26,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "15": {
+    "bricks": 5,
+    "pddl_valid": 10,
+    "rule_feasible": 5,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "16": {
+    "bricks": 5,
+    "pddl_valid": 5,
+    "rule_feasible": 2,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "17": {
+    "bricks": 5,
+    "pddl_valid": 10,
+    "rule_feasible": 7,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "18": {
+    "bricks": 8,
+    "pddl_valid": 1120,
+    "rule_feasible": 510,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "19": {
+    "bricks": 7,
+    "pddl_valid": 210,
+    "rule_feasible": 75,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  },
+  "20": {
+    "bricks": 11,
+    "pddl_valid": 55440,
+    "rule_feasible": 4230,
+    "original_order_rule_feasible": false,
+    "base_planner": "fd-lama"
+  }
+}

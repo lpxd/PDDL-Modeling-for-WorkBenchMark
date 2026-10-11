@@ -1,0 +1,15 @@
+{
+  "planner": "pyperplan",
+  "engine": "pyperplan",
+  "tier": 1,
+  "task_id": 15,
+  "status": "solved",
+  "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "plan_length": 4,
+  "planning_time_s": 0.3585,
+  "wall_s": 3.48,
+  "timeout_s": 600.0,
+  "plan_valid": true,
+  "yaml": "tier1/task_015.yaml",
+  "detail": ""
+}

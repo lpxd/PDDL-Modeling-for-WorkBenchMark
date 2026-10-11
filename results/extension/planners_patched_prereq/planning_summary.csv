@@ -1,0 +1,5 @@
+planner,engine,tier,task_id,status,upf_status,plan_length,planning_time_s,wall_s,timeout_s,plan_valid,yaml,detail,domain,plan_valid_patched,rule_feasible
+fd-lama,fast-downward,3,1,solved,PlanGenerationResultStatus.SOLVED_SATISFICING,10,22.0346,27.1,900.0,True,tier3/task_001.yaml,,prereq,True,True
+fd-lama,fast-downward,3,20,timeout,,0,,900.88,900.0,,tier3/task_020.yaml,,prereq,,
+fd-lmcut,fast-downward-opt,3,1,solved,PlanGenerationResultStatus.SOLVED_SATISFICING,10,21.7416,26.81,900.0,True,tier3/task_001.yaml,,prereq,True,True
+fd-lmcut,fast-downward-opt,3,20,timeout,,0,,900.94,900.0,,tier3/task_020.yaml,,prereq,,

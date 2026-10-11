@@ -1,0 +1,86 @@
+{
+  "harness": "strict",
+  "harness_version": 3,
+  "tier": 3,
+  "task_id": 20,
+  "seed": 0,
+  "plan_length": 22,
+  "success": true,
+  "status": "OK",
+  "actions_ok": 22,
+  "failed_index": null,
+  "failed_action": "",
+  "failed_brick": "",
+  "failed_support": "",
+  "failure_reason": "",
+  "execution_time_s": 218.43,
+  "pose_errors": {
+    "4x2_brick_3": {
+      "xy_mm": 0.503,
+      "z_mm": -0.707,
+      "yaw_deg": 0.008,
+      "tilt_deg": 0.108
+    },
+    "4x2_brick_1": {
+      "xy_mm": 0.342,
+      "z_mm": -0.647,
+      "yaw_deg": 0.008,
+      "tilt_deg": 0.137
+    },
+    "4x2_brick_5": {
+      "xy_mm": 0.489,
+      "z_mm": -0.766,
+      "yaw_deg": 0.012,
+      "tilt_deg": 0.109
+    },
+    "4x2_brick_2": {
+      "xy_mm": 3.843,
+      "z_mm": 0.087,
+      "yaw_deg": 0.41,
+      "tilt_deg": 0.294
+    },
+    "2x2_brick_4": {
+      "xy_mm": 0.303,
+      "z_mm": -0.778,
+      "yaw_deg": 0.013,
+      "tilt_deg": 0.037
+    },
+    "2x2_brick_10": {
+      "xy_mm": 2.602,
+      "z_mm": 2.019,
+      "yaw_deg": 0.19,
+      "tilt_deg": 1.888
+    },
+    "2x2_brick_7": {
+      "xy_mm": 0.462,
+      "z_mm": -0.756,
+      "yaw_deg": 0.018,
+      "tilt_deg": 0.074
+    },
+    "2x2_brick_6": {
+      "xy_mm": 1.934,
+      "z_mm": 0.057,
+      "yaw_deg": 0.187,
+      "tilt_deg": 0.151
+    },
+    "4x2_brick_8": {
+      "xy_mm": 0.458,
+      "z_mm": -0.657,
+      "yaw_deg": 0.011,
+      "tilt_deg": 0.157
+    },
+    "2x2_brick_11": {
+      "xy_mm": 1.738,
+      "z_mm": -0.63,
+      "yaw_deg": 0.049,
+      "tilt_deg": 0.022
+    },
+    "2x2_brick_9": {
+      "xy_mm": 0.426,
+      "z_mm": -0.674,
+      "yaw_deg": 0.011,
+      "tilt_deg": 0.039
+    }
+  },
+  "detail": ""
+}

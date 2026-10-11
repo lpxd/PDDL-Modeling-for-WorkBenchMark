@@ -1,0 +1,15 @@
+{
+  "planner": "fd-lmcut",
+  "engine": "fast-downward-opt",
+  "tier": 3,
+  "task_id": 20,
+  "status": "solved",
+  "upf_status": "PlanGenerationResultStatus.SOLVED_SATISFICING",
+  "plan_length": 22,
+  "planning_time_s": 283.9955,
+  "wall_s": 289.34,
+  "timeout_s": 600.0,
+  "plan_valid": true,
+  "yaml": "tier3/task_020.yaml",
+  "detail": ""
+}
